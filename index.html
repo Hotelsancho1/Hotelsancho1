@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hotel Sancho</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: #1f4e5f;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        nav {
+            background: #163b47;
+            text-align: center;
+            padding: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: bold;
+        }
+
+        .principal {
+            text-align: center;
+            padding: 100px 20px;
+            background: #dfe9ec;
+        }
+
+        .principal h2 {
+            font-size: 40px;
+        }
+
+        .boton {
+            display: inline-block;
+            background: #c99b3b;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        section {
+            max-width: 900px;
+            margin: auto;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .habitacion {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        footer {
+            background: #163b47;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+.foto-hotel {
+    width: 250px;
+    max-width: 50%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    margin: 20px auto;
+}
+</head>
+
+<body>
+
+<header>
+    <h1>HOTEL SANCHO</h1>
+    <p>Bienvenidos a nuestro hotel</p>
+</header>
+
+<nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#habitaciones">Habitaciones</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#contacto">Contacto</a>
+</nav>
+
+<div class="principal" id="inicio">
+    <h2>Tu estancia perfecta</h2>
+<img src="./foto.jpeg" alt="Foto del Hotel Sancho"
+     style="width: 400px; height: 250px; object-fit: cover; border-radius: 10px;">
+    <p>Disfruta de comodidad, tranquilidad y una experiencia inolvidable.</p>
+    <a class="boton" href="#contacto">RESERVAR AHORA</a>
+</div>
+
+<section id="habitaciones">
+    <h2>Nuestras habitaciones</h2>
+
+    <div class="habitacion">
+        <h3>Habitación Doble</h3>
+        <p>Habitación cómoda para dos personas.</p>
+        <p><strong>Desde 90 € por noche</strong></p>
+    </div>
+
+    <div class="habitacion">
+        <h3>Habitación Familiar</h3>
+        <p>Perfecta para familias y estancias largas.</p>
+        <p><strong>Desde 130 € por noche</strong></p>
+    </div>
+</section>
+
+<section id="servicios">
+    <h2>Servicios</h2>
+    <p>📶 Wi-Fi gratuito</p>
+    <p>🏊 Piscina</p>
+    <p>🍽️ Restaurante</p>
+    <p>🚗 Parking</p>
+</section>
+
+<section id="contacto">
+    <h2>Contacto y reservas</h2>
+    <p>📞 Teléfono: 000 000 000</p>
+    <p>✉️ Email: hotel@example.com</p>
+    <a class="boton" href="mailto:hotel@example.com">CONTACTAR</a>
+</section>
+
+<footer>
+    <p>© 2026 Hotel Sancho</p>
+</footer>
+
+</body>
+</html>
