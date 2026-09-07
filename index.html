@@ -122,7 +122,32 @@
         <p><strong>Desde 130 € por noche</strong></p>
     </div>
 </section>
+<section class="reservas">
+  <h2>Consultar disponibilidad</h2>
 
+  <label>Entrada</label>
+  <input type="date" id="entrada">
+
+  <label>Salida</label>
+  <input type="date" id="salida">
+
+  <button onclick="reservar()">Consultar por WhatsApp</button>
+</section>
+
+<script>
+function reservar() {
+  const e = document.getElementById('entrada').value;
+  const s = document.getElementById('salida').value;
+
+  const mensaje = `Hola, quiero consultar disponibilidad.
+Entrada: ${e}
+Salida: ${s}`;
+
+  window.open(
+    "https://wa.me/34624032821?text=" + encodeURIComponent(mensaje)
+  );
+}
+</script>
 <section id="servicios">
     <h2>Servicios</h2>
     <p>📶 Wi-Fi gratuito</p>
@@ -133,7 +158,7 @@
 
 <section id="contacto">
     <h2>Contacto y reservas</h2>
-    <p>📞 Teléfono: 000 000 000</p>
+    <p>📞 Teléfono: 624 032 821</p>
     <p>✉️ Email: hotel@example.com</p>
     <a class="boton" href="mailto:hotel@example.com">CONTACTAR</a>
 </section>
