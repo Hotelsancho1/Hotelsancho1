@@ -73,7 +73,6 @@
             text-align: center;
             padding: 20px;
         }
-    </style>
 .foto-hotel {
     width: 250px;
     max-width: 50%;
@@ -83,6 +82,16 @@
     display: block;
     margin: 20px auto;
 }
+.foto-habitacion {
+    width: 250px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    margin: 10px auto;
+}
+
+</style>
 </head>
 
 <body>
@@ -109,17 +118,42 @@
 
 <section id="habitaciones">
     <h2>Nuestras habitaciones</h2>
+<div class="habitacion">
+    <div class="habitacion">
+    <img src="individual.jpeg" alt="Habitación Individual" class="foto-habitacion">
+
+    <h3>Habitación Individual</h3>
+    <p>Habitación cómoda para una persona.</p>
+
+    <p>🛏️ 1 cama individual</p>
+    <p>🚿 Baño privado</p>
+    <p>📶 Wi-Fi gratuito</p>
+    <p>❄️ Aire acondicionado</p>
+    <p>📺 Televisión</p>
+
+    <p><strong>Desde 55 € por noche</strong></p>
+</div>
 
     <div class="habitacion">
         <h3>Habitación Doble</h3>
+<div class="slider">
+    <button onclick="cambiarFoto(-1)">❮</button>
+
+    <img id="fotoDoble"
+         src="doble.jpeg"
+         class="foto-habitacion">
+
+    <button onclick="cambiarFoto(1)">❯</button>
+</div>
         <p>Habitación cómoda para dos personas.</p>
-        <p><strong>Desde 90 € por noche</strong></p>
+        <p><strong>Desde 80 € por noche</strong></p>
     </div>
 
+
     <div class="habitacion">
-        <h3>Habitación Familiar</h3>
+        <h3>Habitación Triple</h3>
         <p>Perfecta para familias y estancias largas.</p>
-        <p><strong>Desde 130 € por noche</strong></p>
+        <p><strong>Desde 100 € por noche</strong></p>
     </div>
 </section>
 <section class="reservas">
@@ -148,6 +182,36 @@ Salida: ${s}`;
   );
 }
 </script>
+</script>
+
+<script>
+let fotoActual = 0;
+
+const fotosDoble = [
+    "doble.jpeg",
+    "doble2.jpeg",
+    "doble3.jpeg",
+    "doble4.jpeg",
+    "doble5.jpeg",
+    "doble6.jpeg"
+];
+
+function cambiarFoto(direccion) {
+    fotoActual += direccion;
+
+    if (fotoActual < 0) {
+        fotoActual = fotosDoble.length - 1;
+    }
+
+    if (fotoActual >= fotosDoble.length) {
+        fotoActual = 0;
+    }
+
+    document.getElementById("fotoDoble").src = fotosDoble[fotoActual];
+}
+</script>
+
+<section id="servicios">
 <section id="servicios">
     <h2>Servicios</h2>
     <p>📶 Wi-Fi gratuito</p>
@@ -159,8 +223,8 @@ Salida: ${s}`;
 <section id="contacto">
     <h2>Contacto y reservas</h2>
     <p>📞 Teléfono: 624 032 821</p>
-    <p>✉️ Email: hotel@example.com</p>
-    <a class="boton" href="mailto:hotel@example.com">CONTACTAR</a>
+    <p>✉️ Email: hotelsancho1@gmail.com</p>
+    <a class="boton" href="mailto:hotelsancho1@gmail.com">CONTACTAR</a>
 </section>
 
 <footer>
