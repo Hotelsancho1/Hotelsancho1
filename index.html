@@ -29,22 +29,24 @@
         }
 
         nav {
-       background: rgba(0, 0, 0, 0.35);
+       background: transparent;
         position: absolute;
-        top: 90px;
+        top: 20px;
         left: 0;
         width: 100%;
         z-index: 10;
         text-align: right;
-        padding: 15px 40px;
+        padding: 10px 40px;
         box-sizing: border-box;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 20px;
-            font-weight: bold;
+            margin: 0 25px;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
         .principal {
@@ -98,7 +100,7 @@
         }
 .hero  {
     width: 100%;
-    height: 850px;
+    height: 100vh;
     position: realative;
     overflow: hidden;
 }
@@ -113,7 +115,7 @@
 .principal {
     width: 100vw;
     max-width: none;
-    height: 850px;
+    height: 100vh;
     margin: 0;
     position: relative;
     overflow:hidden;
@@ -121,7 +123,7 @@
 }
 
 .foto-hotel {
-    width: 100vw;
+    width: 100%;
     max-width: none;
     height: 100%;
     object-fit: cover;
@@ -140,39 +142,82 @@
 
 .disponibilidad {
     position: absolute;
-    bottom: 30px;
+    bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 20;
 
     width: 90%;
-    background: white;
-    padding: 20px;
+    max-width: 1400px;
+    min-height: 65px;
+
+    background: rgba(255, 255, 255, 0.97);
+    padding: 6px 10px;
 
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 30px;
+    gap: 0;
 
-    z-index: 5;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    border-radius: 12px;
+
+    overflow: hidden;
+
 }
 
+.logo-hotel {
+    position: absolute;
+    bottom: 150px;
+    left: 7%;
+    z-index: 20;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.logo-hotel .sol {
+    font-size: 30px;
+    line-height: 25px;
+}
+
+.logo-hotel .olas {
+    font-size: 22px;
+    line-height: 18px;
+}
+
+.nombre-logo {
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
 .disponibilidad div {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+    flex: 1;
+    padding: 8px 18px;
+    border-right: 1px solid #ddd;
 }
 
 .disponibilidad input {
-    padding: 10px;
-    border: 1px solid #ccc;
+    width: 100%;
+    padding: 10px 5px;
+    border: none;
+    outline: none;
+    background: transparent;
 }
 
 .buscar-hotel {
-    background: #c99b3b;
+    border: none;
+    background: #d6b34c;
     color: white;
-    padding: 18px 30px;
-    text-decoration: none;
+
+    padding: 18px 28px;
+    min-height: 50px;
+    min-width: 65px;
+
+    font-size: 15px;
+    cursor: pointer;
     font-weight: bold;
+    border-radius: 8px;
 }
 </style>
 </head>
@@ -181,7 +226,6 @@
 
 <header>
     <h1>HOTEL SANCHO</h1>
-    <p>Bienvenidos a nuestro hotel</p>
 </header>
 
 <nav>
@@ -197,28 +241,37 @@
          src="foto.jpeg"
          class="foto-hotel">
 
-    <h2>Tu estancia perfecta</h2>
+    <h2 id="textoCambiante">Tu estancia perfecta</h2>
+
+<div class="logo-hotel">
+    <div class="sol">☀</div>
+    <div class="olas">〰 〰</div>
+    <div class="nombre-logo">HOTEL SANCHO</div>
+
+</div>
 
     <div class="disponibilidad">
         <div>
-            <label>Entrada</label>
-            <input type="date">
-        </div>
+    <label>Entrada</label>
+    <input type="date" id="entrada">
+</div>
 
-        <div>
-            <label>Salida</label>
-            <input type="date">
-        </div>
+<div>
+    <label>Salida</label>
+    <input type="date" id="salida">
+</div>
 
-        <a href="#" class="buscar-hotel">
-            Consultar disponibilidad
-        </a>
+        <a href="#" class="buscar-hotel"
+   onclick="mostrarHabitaciones(); return false;">
+    Consultar disponibilidad
+</a>
     </div>
 
 </section>
 
 <section id="habitaciones">
     <h2>Nuestras habitaciones</h2>
+
 <div class="habitacion">
     <div class="habitacion">
       <img src="individual.jpeg" 
@@ -260,16 +313,6 @@
     </div>
 </section>
 <section class="reservas">
-  <h2>Consultar disponibilidad</h2>
-
-  <label>Entrada</label>
-  <input type="date" id="entrada">
-
-  <label>Salida</label>
-  <input type="date" id="salida">
-
-  <button onclick="reservar()">Consultar por WhatsApp</button>
-</section>
 
 <script>
 function reservar() {
@@ -284,8 +327,6 @@ Salida: ${s}`;
     "https://wa.me/34624032821?text=" + encodeURIComponent(mensaje)
   );
 }
-</script>
-</script>
 
 <script>
 let fotoActual = 0;
@@ -330,9 +371,42 @@ function cambiarFoto(direccion) {
     <a class="boton" href="mailto:hotelsancho1@gmail.com">CONTACTAR</a>
 </section>
 
+<section id="habitacionesDisponibles" style="display:none;">
+    <h2>Elige tu habitación</h2>
+
+    <div class="habitacion">
+        <h3>Habitación Doble</h3>
+        <p>Desde 80 € por noche</p>
+        <button onclick="mostrarReserva('Habitación Doble', 80)">
+            Reservar
+        </button>
+    </div>
+
+    <div class="habitacion">
+        <h3>Habitación Triple</h3>
+        <p>Desde 100 € por noche</p>
+        <button onclick="mostrarReserva('Habitación Triple', 100)">
+            Reservar
+        </button>
+    </div>
+</section>
+
+<section id="formularioReserva" style="display:none;">
+    <h2>Introduce tus datos</h2>
+
+    <div id="resumenReserva"></div>
+    <br>
+
+    <input type="text" id="nombre" placeholder="Nombre">
+    <input type="text" id="apellidos" placeholder="Apellidos">
+    <input type="email" id="email" placeholder="Email">
+    <input type="tel" id="telefono" placeholder="Teléfono">
+
+    <button onclick="confirmarReserva()">Confirmar reserva</button>
+</section>
+
 <footer>
     <p>© 2026 Hotel Sancho</p>
-</footer>
 </footer>
 
 <script>
@@ -355,7 +429,137 @@ function cambiarFoto(direccion) {
         }
 
         document.getElementById("fotoHotel").src = fotos[numero];
-    }, 3000);
+}, 3000);
+</script>
+
+<script>
+const frases = [
+    "Tu estancia perfecta",
+    "Descubre Playas increibles",
+    "Momentos inolvidables",
+    "Relájate junto al mar",
+    "Disfruta tus vacaciones",
+    "Tu descanso empieza aqui"
+];
+
+let posicion = 0;
+const texto = document.getElementById("textoCambiante");
+
+setInterval(function() {
+    posicion++;
+
+    if (posicion >= frases.length) {
+        posicion = 0;
+    }
+
+    texto.textContent = frases[posicion];
+}, 4000);
+</script>
+
+<script>
+function mostrarHabitaciones() {
+    document.getElementById("habitacionesDisponibles").style.display = "block";
+    document.getElementById("habitacionesDisponibles").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+let habitacionElegida = "";
+let precioElegido = 0;
+
+function mostrarReserva(habitacion, precio) {
+
+    const entrada = document.getElementById("entrada").value;
+    const salida = document.getElementById("salida").value;
+
+    if (entrada === "" || salida === "") {
+        alert("Selecciona primero la fecha de entrada y salida");
+        return;
+    }
+
+    const fechaEntrada = new Date(entrada);
+    const fechaSalida = new Date(salida);
+
+    const diferencia = fechaSalida - fechaEntrada;
+    const noches = diferencia / (1000 * 60 * 60 * 24);
+
+    if (noches <= 0) {
+        alert("La fecha de salida debe ser posterior a la entrada");
+        return;
+    }
+
+    habitacionElegida = habitacion;
+    precioElegido = precio;
+
+    const total = noches * precio;
+
+    document.getElementById("resumenReserva").innerHTML =
+        "<b>" + habitacion + "</b><br>" +
+        "Entrada: " + entrada + "<br>" +
+        "Salida: " + salida + "<br>" +
+        "Noches: " + noches + "<br>" +
+        "Precio por noche: " + precio + " €<br>" +
+        "<h3>Total: " + total + " €</h3>";
+
+    document.getElementById("formularioReserva").style.display = "block";
+
+    document.getElementById("formularioReserva").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function confirmarReserva() {
+    const nombre = document.getElementById("nombre").value;
+    const email = document.getElementById("email").value;
+
+    if (nombre === "" || email === "") {
+        alert("Por favor completa nombre y email");
+        return;
+    }
+
+    guardarReservaLocal();
+
+ alert(
+        "Reserva recibida\\n" +
+        habitacionElegida +
+        "\nPrecio desde: " + precioElegido + " €"
+    );
+}
+function estaOcupada(habitacion, entrada, salida) {
+    const reservas =
+        JSON.parse(localStorage.getItem("reservasHotel")) || [];
+
+    const nuevaEntrada = new Date(entrada);
+    const nuevaSalida = new Date(salida);
+
+    return reservas.some(function(reserva) {
+        if (reserva.habitacion !== habitacion) {
+            return false;
+        }
+
+        const entradaGuardada = new Date(reserva.entrada);
+        const salidaGuardada = new Date(reserva.salida);
+
+        return nuevaEntrada < salidaGuardada &&
+               nuevaSalida > entradaGuardada;
+    });
+}
+function guardarReservaLocal() {
+    const entrada = document.getElementById("entrada").value;
+    const salida = document.getElementById("salida").value;
+
+    const nuevaReserva = {
+        habitacion: habitacionElegida,
+        entrada: entrada,
+        salida: salida
+    };
+
+    let reservas = JSON.parse(localStorage.getItem("reservasHotel")) || [];
+
+    reservas.push(nuevaReserva);
+
+    localStorage.setItem("reservasHotel", JSON.stringify(reservas));
+}
 </script>
 
 </body>
