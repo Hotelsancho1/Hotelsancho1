@@ -302,13 +302,26 @@
     <button onclick="cambiarFoto(1)">❯</button>
 </div>
         <p>Habitación cómoda para dos personas.</p>
+    <p>🛏️ 1 cama doble</p>
+    <p>🚿 Baño privado</p>
+    <p>📶 Wi-Fi gratuito</p>
+    <p>❄️ Aire acondicionado</p>
+    <p>📺 Televisión</p>
+
         <p><strong>Desde 80 € por noche</strong></p>
     </div>
 
 
     <div class="habitacion">
         <h3>Habitación Triple</h3>
-        <p>Perfecta para familias y estancias largas.</p>
+        <p>Perfecta para 3 personas y estancias largas.</p>
+    <p>🛏️ 1 cama Matrimonio</p>
+    <p>🛏️ 1 cama individual</p>
+    <p>🚿 Baño privado</p>
+    <p>📶 Wi-Fi gratuito</p>
+    <p>❄️ Aire acondicionado</p>
+    <p>📺 Televisión</p>
+
         <p><strong>Desde 100 € por noche</strong></p>
     </div>
 </section>
@@ -416,7 +429,28 @@ function cambiarFoto(direccion) {
         "./foto3.jpeg",
         "./foto4.jpeg",
         "./foto5.jpeg",
-        "./foto6.jpeg"
+        "./foto6.jpeg",
+        "./1.jpg",
+        "./2.jpg",
+        "./3.jpg",
+        "./4.jpg",
+        "./5.jpg",
+        "./6.jpg",
+        "./7.jpg",
+        "./8.jpg",
+        "./9.jpg",
+        "./10.jpg",
+        "./11.jpg",
+        "./12.jpg",
+        "./13.jpg",
+        "./14.jpg",
+        "./15.jpg",
+        "./16.jpg",
+        "./17.jpg",
+        "./18.jpg",
+        "./19.jpg",
+        "./20.jpg"
+
     ];
 
     let numero = 0;
@@ -544,21 +578,51 @@ function estaOcupada(habitacion, entrada, salida) {
                nuevaSalida > entradaGuardada;
     });
 }
+
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxpKQU0bVbgkgwJK0Htvmo-gR7ElifVQoprN3ChOy-9Z14mPBFQQwtq6eEpCOSmmxvH/exec";
+
 function guardarReservaLocal() {
-    const entrada = document.getElementById("entrada").value;
-    const salida = document.getElementById("salida").value;
+  const entrada = document.getElementById("entrada").value;
+  const salida = document.getElementById("salida").value;
 
-    const nuevaReserva = {
-        habitacion: habitacionElegida,
-        entrada: entrada,
-        salida: salida
-    };
+  const fechaEntrada = new Date(entrada);
+  const fechaSalida = new Date(salida);
+  const noches = Math.round(
+    (fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)
+  );
 
-    let reservas = JSON.parse(localStorage.getItem("reservasHotel")) || [];
+  const nuevaReserva = {
+    habitacion: habitacionElegida,
+    entrada: entrada,
+    salida: salida,
+    noches: noches,
+    precioNoche: precioElegido,
+    total: noches * Number(precioElegido),
+    nombre: document.getElementById("nombre")?.value || "",
+    apellidos: document.getElementById("apellidos")?.value || "",
+    email: document.getElementById("email")?.value || "",
+    telefono: document.getElementById("telefono")?.value || ""
+  };
 
-    reservas.push(nuevaReserva);
+  let reservas =
+    JSON.parse(localStorage.getItem("reservasHotel")) || [];
 
-    localStorage.setItem("reservasHotel", JSON.stringify(reservas));
+  reservas.push(nuevaReserva);
+
+  localStorage.setItem(
+    "reservasHotel",
+    JSON.stringify(reservas)
+  );
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(nuevaReserva)
+  });
 }
 </script>
 
