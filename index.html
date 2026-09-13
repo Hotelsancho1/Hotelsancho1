@@ -252,6 +252,88 @@
   .boton-whatsapp:hover {
     background-color: #1ebe5d;
   }
+#habitaciones {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 20px;
+}
+
+#habitaciones h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+}
+
+.habitaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+.habitaciones-grid .habitacion {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.14);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.habitaciones-grid .habitacion:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+.habitaciones-grid .foto-habitacion {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.habitaciones-grid .habitacion h3,
+.habitaciones-grid .habitacion p {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.habitaciones-grid .habitacion h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.habitaciones-grid .habitacion p {
+  margin-top: 5px;
+  margin-bottom: 7px;
+}
+
+.habitaciones-grid .habitacion p:last-child {
+  margin-top: auto;
+  padding-top: 18px;
+  padding-bottom: 22px;
+  color: #c71920;
+  font-size: 21px;
+}
+
+.habitaciones-grid .slider {
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .habitaciones-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .habitaciones-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 <body>
 
@@ -303,14 +385,37 @@
 <section id="habitaciones">
     <h2>Nuestras habitaciones</h2>
 
-<div class="habitacion">
-    <div class="habitacion">
-      <img src="individual.jpeg" 
-        alt="Habitación Individual" 
-        class="foto-habitacion">
+<div class="habitaciones-grid">
 
-    <h3>Habitación Individual</h3>
-    <p>Habitación cómoda para una persona.</p>
+    <div class="habitacion">
+<h3>Habitación Individual</h3>
+
+<div class="slider">
+  <button
+    type="button"
+    onclick="cambiarFotoIndividual(-1)"
+    aria-label="Foto anterior"
+  >
+    ‹
+  </button>
+
+  <img
+    id="fotoIndividual"
+    src="individual.jpeg"
+    alt="Habitación Individual"
+    class="foto-habitacion"
+  >
+
+  <button
+    type="button"
+    onclick="cambiarFotoIndividual(1)"
+    aria-label="Foto siguiente"
+  >
+    ›
+  </button>
+</div>
+
+ <p>Habitación cómoda para una persona.</p>
 
     <p>🛏️ 1 cama individual</p>
     <p>🚿 Baño privado</p>
@@ -332,7 +437,8 @@
 
     <button onclick="cambiarFoto(1)">❯</button>
 </div>
-        <p>Habitación cómoda para dos personas.</p>
+    <p>Habitación cómoda para dos personas.</p>
+
     <p>🛏️ 1 cama doble</p>
     <p>🚿 Baño privado</p>
     <p>📶 Wi-Fi gratuito</p>
@@ -344,7 +450,34 @@
 
 
     <div class="habitacion">
-        <h3>Habitación Triple</h3>
+
+    <h3>Habitación Triple</h3>
+
+<div class="slider">
+  <button
+    type="button"
+    onclick="cambiarFotoTriple(-1)"
+    aria-label="Foto anterior"
+  >
+    ‹
+  </button>
+
+  <img
+    id="fotoTriple"
+    src="triple1.jpeg"
+    alt="Habitación Triple"
+    class="foto-habitacion"
+  >
+
+  <button
+    type="button"
+    onclick="cambiarFotoTriple(1)"
+    aria-label="Foto siguiente"
+  >
+    ›
+  </button>
+</div>
+        
         <p>Perfecta para 3 personas y estancias largas.</p>
     <p>🛏️ 1 cama Matrimonio</p>
     <p>🛏️ 1 cama individual</p>
@@ -355,6 +488,8 @@
 
         <p><strong>Desde 100 € por noche</strong></p>
     </div>
+    </div>
+
 </section>
 <section class="reservas">
 
@@ -371,8 +506,13 @@ Salida: ${s}`;
     "https://wa.me/34624032821?text=" + encodeURIComponent(mensaje)
   );
 }
+let fotoIndividualActual = 0;
 
-<script>
+const fotosIndividual = [
+    "individual.jpeg",
+    "individual1.jpeg"
+];
+
 let fotoActual = 0;
 
 const fotosDoble = [
@@ -384,6 +524,29 @@ const fotosDoble = [
     "doble6.jpeg"
 ];
 
+let fotoTripleActual = 0;
+
+const fotosTriple = [
+  "triple.jpeg",
+  "triple1.jpeg",
+  "triple2.jpeg",
+  "triple3.jpeg"
+];
+
+function cambiarFotoTriple(direccion) {
+  fotoTripleActual += direccion;
+
+  if (fotoTripleActual < 0) {
+    fotoTripleActual = fotosTriple.length - 1;
+  }
+
+  if (fotoTripleActual >= fotosTriple.length) {
+    fotoTripleActual = 0;
+  }
+
+  document.getElementById("fotoTriple").src =
+    fotosTriple[fotoTripleActual];
+}
 function cambiarFoto(direccion) {
     fotoActual += direccion;
 
@@ -403,8 +566,6 @@ function cambiarFoto(direccion) {
 <section id="servicios">
     <h2>Servicios</h2>
     <p>📶 Wi-Fi gratuito</p>
-    <p>🏊 Piscina</p>
-    <p>🍽️ Restaurante</p>
     <p>🚗 Parking</p>
 </section>
 
