@@ -573,11 +573,26 @@ function cambiarFoto(direccion) {
     <h2>Contacto y reservas</h2>
     <p>📞 Teléfono: 624 032 821</p>
     <p>✉️ Email: hotelsancho1@gmail.com</p>
+<p>
+  📍 <a href="https://maps.app.goo.gl/R6vUV3rJV5pJe1nK7?g_st=ic"
+        target="_blank">
+    Ver ubicación en Google Maps
+  </a>
+</p>
+
     <a class="boton" href="mailto:hotelsancho1@gmail.com">CONTACTAR</a>
 </section>
 
 <section id="habitacionesDisponibles" style="display:none;">
     <h2>Elige tu habitación</h2>
+
+<div class="habitacion">
+        <h3>Habitación Individual</h3>
+        <p>Desde 55 € por noche</p>
+        <button onclick="mostrarReserva('Habitación Individual', 55)">
+            Reservar
+        </button>
+    </div>
 
     <div class="habitacion">
         <h3>Habitación Doble</h3>
@@ -733,8 +748,7 @@ function mostrarReserva(habitacion, precio) {
         behavior: "smooth"
     });
 }
-
-function confirmarReserva() {
+async function confirmarReserva() {
     const nombre = document.getElementById("nombre").value;
     const email = document.getElementById("email").value;
 
@@ -743,32 +757,53 @@ function confirmarReserva() {
         return;
     }
 
+    const entrada = document.getElementById("entrada").value;
+    const salida = document.getElementById("salida").value;
+
+    const ocupada = await estaOcupada(
+        habitacionElegida,
+        entrada,
+        salida
+    );
+
+    if (ocupada) {
+        alert("Esta habitación ya está ocupada en esas fechas. Por favor elige otras fechas.");
+        return;
+    }
+
     guardarReservaLocal();
 
- alert(
-        "Reserva recibida\\n" +
+    alert(
+        "Reserva recibida\n" +
         habitacionElegida +
         "\nPrecio desde: " + precioElegido + " €"
     );
 }
-function estaOcupada(habitacion, entrada, salida) {
-    const reservas =
-        JSON.parse(localStorage.getItem("reservasHotel")) || [];
+async function estaOcupada(habitacion, entrada, salida) {
+  try {
+    const respuesta = await fetch(GOOGLE_SCRIPT_URL);
+    const reservas = await respuesta.json();
 
     const nuevaEntrada = new Date(entrada);
     const nuevaSalida = new Date(salida);
 
     return reservas.some(function(reserva) {
-        if (reserva.habitacion !== habitacion) {
-            return false;
-        }
 
-        const entradaGuardada = new Date(reserva.entrada);
-        const salidaGuardada = new Date(reserva.salida);
+      if (reserva.habitacion !== habitacion) {
+        return false;
+      }
 
-        return nuevaEntrada < salidaGuardada &&
-               nuevaSalida > entradaGuardada;
+      const entradaGuardada = new Date(reserva.entrada);
+      const salidaGuardada = new Date(reserva.salida);
+
+      return nuevaEntrada < salidaGuardada &&
+             nuevaSalida > entradaGuardada;
     });
+
+  } catch (error) {
+    console.error("Error comprobando disponibilidad:", error);
+    return false;
+  }
 }
 
 const GOOGLE_SCRIPT_URL =
