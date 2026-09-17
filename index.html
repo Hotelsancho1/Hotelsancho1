@@ -291,6 +291,51 @@ header.san-brand-header::before,header.san-brand-header::after{content:none!impo
 @media(max-width:1100px){header.san-brand-header{left:16px!important;width:300px!important;transform:scale(.82)!important;transform-origin:left top!important}}
 @media(max-width:768px){header.san-brand-header{position:relative!important;top:auto!important;left:auto!important;width:100%!important;height:auto!important;transform:none!important;background:#111!important;padding:10px 14px!important;box-sizing:border-box!important;justify-content:center!important}.san-logo-mark{width:70px;height:60px}.san-brand-text strong{font-size:36px}.san-brand-text small{font-size:13px}}
 </style>
+
+<style>
+/* ===== FECHAS VISIBLES DD/MM/AAAA ===== */
+.fecha-personalizada{
+    position:relative;
+    width:100%;
+    min-height:36px;
+}
+.disponibilidad .fecha-personalizada{
+    padding:0;
+    border-right:0;
+    box-sizing:border-box;
+}
+.disponibilidad .fecha-visible{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 42px 10px 5px;
+    border:none;
+    outline:none;
+    background:transparent;
+    font-family:Arial,sans-serif;
+}
+.fecha-icono{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:16px;
+    pointer-events:none;
+    z-index:1;
+}
+.disponibilidad .fecha-nativa{
+    position:absolute;
+    right:0;
+    top:0;
+    width:42px;
+    height:100%;
+    margin:0;
+    padding:0;
+    opacity:0;
+    cursor:pointer;
+    z-index:2;
+}
+</style>
+
 </head>
 
 <a
@@ -558,12 +603,26 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
     <div class="disponibilidad">
         <div>
     <label data-i18n="checkin">Entrada</label>
-    <input type="date" id="entrada">
+    <div class="fecha-personalizada">
+        <input type="text" id="entradaVisible" class="fecha-visible"
+               placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10"
+               autocomplete="off" aria-label="Fecha de entrada">
+        <span class="fecha-icono" aria-hidden="true">📅</span>
+        <input type="date" id="entrada" class="fecha-nativa"
+               aria-label="Abrir calendario de entrada">
+    </div>
 </div>
 
 <div>
     <label data-i18n="checkout">Salida</label>
-    <input type="date" id="salida">
+    <div class="fecha-personalizada">
+        <input type="text" id="salidaVisible" class="fecha-visible"
+               placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10"
+               autocomplete="off" aria-label="Fecha de salida">
+        <span class="fecha-icono" aria-hidden="true">📅</span>
+        <input type="date" id="salida" class="fecha-nativa"
+               aria-label="Abrir calendario de salida">
+    </div>
 </div>
 
         <a href="#" class="buscar-hotel"
@@ -993,6 +1052,12 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("entrada")?.addEventListener("change", actualizarPreciosMostrados);
 });
 
+function formatearFecha(fechaTexto) {
+    if (!fechaTexto) return "";
+    const [ano, mes, dia] = fechaTexto.split("-");
+    return `${dia}/${mes}/${ano}`;
+}
+
 function mostrarReserva(habitacion) {
 
     const entrada = document.getElementById("entrada").value;
@@ -1019,13 +1084,13 @@ function mostrarReserva(habitacion) {
     precioElegido = calculo.noches ? (calculo.total / calculo.noches).toFixed(2) : 0;
 
     const detallePrecios = calculo.detalle
-      .map(d => d.fecha + ": " + d.precio + " €")
+      .map(d => formatearFecha(d.fecha) + ": " + d.precio + " €")
       .join("<br>");
 
     document.getElementById("resumenReserva").innerHTML =
         "<b>" + habitacion + "</b><br>" +
-        "Entrada: " + entrada + "<br>" +
-        "Salida: " + salida + "<br>" +
+        "Entrada: " + formatearFecha(entrada) + "<br>" +
+        "Salida: " + formatearFecha(salida) + "<br>" +
         "Noches: " + calculo.noches + "<br><br>" +
         "<b>Precio por cada noche:</b><br>" + detallePrecios +
         "<h3>Total: " + calculo.total + " €</h3>";
@@ -1189,5 +1254,71 @@ document.addEventListener('click', function(e){
   if(m && !m.contains(e.target)) m.classList.remove('open');
 });
 </script>
+
+<script>
+/* ===== SINCRONIZACIÓN DE FECHAS DD/MM/AAAA ===== */
+(function () {
+    function aVisible(valorISO) {
+        if (!valorISO) return "";
+        const p = valorISO.split("-");
+        return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : "";
+    }
+
+    function aISO(valorVisible) {
+        const m = valorVisible.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (!m) return "";
+        const dia = Number(m[1]), mes = Number(m[2]), ano = Number(m[3]);
+        const f = new Date(ano, mes - 1, dia);
+        if (f.getFullYear() !== ano || f.getMonth() !== mes - 1 || f.getDate() !== dia) return "";
+        return String(ano).padStart(4,"0") + "-" +
+               String(mes).padStart(2,"0") + "-" +
+               String(dia).padStart(2,"0");
+    }
+
+    function prepararFecha(idNativo, idVisible) {
+        const nativo = document.getElementById(idNativo);
+        const visible = document.getElementById(idVisible);
+        if (!nativo || !visible) return;
+
+        function copiarDesdeNativo() {
+            visible.value = aVisible(nativo.value);
+            nativo.dispatchEvent(new Event("fechaSincronizada"));
+        }
+
+        nativo.addEventListener("change", copiarDesdeNativo);
+
+        visible.addEventListener("input", function () {
+            let v = visible.value.replace(/\D/g, "").slice(0, 8);
+            if (v.length > 4) v = v.slice(0,2) + "/" + v.slice(2,4) + "/" + v.slice(4);
+            else if (v.length > 2) v = v.slice(0,2) + "/" + v.slice(2);
+            visible.value = v;
+
+            const iso = aISO(v);
+            if (iso) {
+                nativo.value = iso;
+                nativo.dispatchEvent(new Event("change", { bubbles:true }));
+            } else if (v.length === 0) {
+                nativo.value = "";
+                nativo.dispatchEvent(new Event("change", { bubbles:true }));
+            }
+        });
+
+        visible.addEventListener("blur", function () {
+            if (visible.value && !aISO(visible.value)) {
+                alert("Introduce la fecha en formato día/mes/año, por ejemplo 18/09/2026");
+                visible.focus();
+            }
+        });
+
+        copiarDesdeNativo();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        prepararFecha("entrada", "entradaVisible");
+        prepararFecha("salida", "salidaVisible");
+    });
+})();
+</script>
+
 </body>
 </html>
