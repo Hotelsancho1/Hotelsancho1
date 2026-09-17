@@ -617,8 +617,8 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
     <p>🥐 Desayuno incluido</p>
 
 
-    <p><strong>Desde 55 € por noche</strong></p>
-<button class="boton-reservar" onclick="mostrarReserva('Habitación Individual', 55)">Reservar</button>
+    <p><strong id="precio-individual">Desde 55 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Individual')">Reservar</button>
 </div>
 
     <div class="habitacion" id="habitacion-doble">
@@ -641,8 +641,8 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
     <p>📺 Televisión</p>
     <p>🥐 Desayuno incluido</p>
 
-        <p><strong>Desde 80 € por noche</strong></p>
-<button class="boton-reservar" onclick="mostrarReserva('Habitación Doble', 80)">Reservar</button>
+        <p><strong id="precio-doble">Desde 80 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Doble')">Reservar</button>
     </div>
 
 
@@ -684,8 +684,8 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
     <p>📺 Televisión</p>
     <p>🥐 Desayuno incluido</p>
 
-        <p><strong>Desde 100 € por noche</strong></p>
-<button class="boton-reservar" onclick="mostrarReserva('Habitación Triple', 100)">Reservar</button>
+        <p><strong id="precio-triple">Desde 100 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Triple')">Reservar</button>
     </div>
     </div>
 
@@ -892,7 +892,85 @@ function mostrarHabitaciones() {
 let habitacionElegida = "";
 let precioElegido = 0;
 
-function mostrarReserva(habitacion, precio) {
+// ===== PRECIOS POR FECHA =====
+// Cambia solamente las fechas y los precios de esta tabla.
+// Formato de fecha: AAAA-MM-DD. Puedes añadir tantas temporadas como quieras.
+const temporadasPrecios = [
+  { desde: "2026-01-10", hasta: "2026-12-31", individual: 55, doble: 75, triple: 90 },
+  { desde: "2027-01-01", hasta: "2027-03-31", individual: 55, doble: 70, triple: 85 },
+  { desde: "2027-04-01", hasta: "2027-06-30", individual: 55, doble: 80, triple: 100 },
+  { desde: "2027-07-01", hasta: "2027-07-31", individual: 60, doble: 85, triple: 110 },
+  { desde: "2027-08-01", hasta: "2027-08-31", individual: 60, doble: 100, triple: 130 },
+  { desde: "2027-09-01", hasta: "2027-09-30", individual: 55, doble: 80, triple: 100 },
+  { desde: "2027-10-01", hasta: "2027-12-31", individual: 55, doble: 75, triple: 85 },
+
+
+  // Ejemplo para otro año: copia las líneas anteriores y cambia 2026 por 2027.
+];
+
+const preciosBase = { individual: 55, doble: 80, triple: 100 };
+
+function tipoHabitacion(habitacion) {
+  if (habitacion.includes("Individual")) return "individual";
+  if (habitacion.includes("Doble")) return "doble";
+  return "triple";
+}
+
+function fechaLocal(fechaTexto) {
+  const [y, m, d] = fechaTexto.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function textoFechaLocal(fecha) {
+  const y = fecha.getFullYear();
+  const m = String(fecha.getMonth() + 1).padStart(2, "0");
+  const d = String(fecha.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function precioParaNoche(habitacion, fechaTexto) {
+  const tipo = tipoHabitacion(habitacion);
+  const temporada = temporadasPrecios.find(t => fechaTexto >= t.desde && fechaTexto <= t.hasta);
+  return temporada ? Number(temporada[tipo]) : Number(preciosBase[tipo]);
+}
+
+function calcularPrecioEstancia(habitacion, entrada, salida) {
+  const inicio = fechaLocal(entrada);
+  const fin = fechaLocal(salida);
+  let total = 0;
+  let noches = 0;
+  const detalle = [];
+
+  for (let dia = new Date(inicio); dia < fin; dia.setDate(dia.getDate() + 1)) {
+    const fecha = textoFechaLocal(dia);
+    const precio = precioParaNoche(habitacion, fecha);
+    total += precio;
+    noches++;
+    detalle.push({ fecha, precio });
+  }
+  return { total, noches, detalle };
+}
+
+function actualizarPreciosMostrados() {
+  const entrada = document.getElementById("entrada").value;
+  const fecha = entrada || textoFechaLocal(new Date());
+  const habitaciones = [
+    ["Habitación Individual", "precio-individual"],
+    ["Habitación Doble", "precio-doble"],
+    ["Habitación Triple", "precio-triple"]
+  ];
+  habitaciones.forEach(([hab, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "Desde " + precioParaNoche(hab, fecha) + " € por noche";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  actualizarPreciosMostrados();
+  document.getElementById("entrada")?.addEventListener("change", actualizarPreciosMostrados);
+});
+
+function mostrarReserva(habitacion) {
 
     const entrada = document.getElementById("entrada").value;
     const salida = document.getElementById("salida").value;
@@ -914,17 +992,20 @@ function mostrarReserva(habitacion, precio) {
     }
 
     habitacionElegida = habitacion;
-    precioElegido = precio;
+    const calculo = calcularPrecioEstancia(habitacion, entrada, salida);
+    precioElegido = calculo.noches ? (calculo.total / calculo.noches).toFixed(2) : 0;
 
-    const total = noches * precio;
+    const detallePrecios = calculo.detalle
+      .map(d => d.fecha + ": " + d.precio + " €")
+      .join("<br>");
 
     document.getElementById("resumenReserva").innerHTML =
         "<b>" + habitacion + "</b><br>" +
         "Entrada: " + entrada + "<br>" +
         "Salida: " + salida + "<br>" +
-        "Noches: " + noches + "<br>" +
-        "Precio por noche: " + precio + " €<br>" +
-        "<h3>Total: " + total + " €</h3>";
+        "Noches: " + calculo.noches + "<br><br>" +
+        "<b>Precio por cada noche:</b><br>" + detallePrecios +
+        "<h3>Total: " + calculo.total + " €</h3>";
 
     document.getElementById("formularioReserva").style.display = "block";
 
@@ -1003,13 +1084,16 @@ function guardarReservaLocal() {
     (fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)
   );
 
+  const calculoPrecio = calcularPrecioEstancia(habitacionElegida, entrada, salida);
+
   const nuevaReserva = {
     habitacion: habitacionElegida,
     entrada: entrada,
     salida: salida,
     noches: noches,
     precioNoche: precioElegido,
-    total: noches * Number(precioElegido),
+    total: calculoPrecio.total,
+    detallePrecios: calculoPrecio.detalle,
     nombre: document.getElementById("nombre")?.value || "",
     apellidos: document.getElementById("apellidos")?.value || "",
     email: document.getElementById("email")?.value || "",
