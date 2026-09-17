@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Hotel Sancho</title>
+<title>Hotel Sancho</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Hotel Sancho">
 
     <style>
         body {
@@ -219,6 +225,21 @@
     font-weight: bold;
     border-radius: 8px;
 }
+</style>
+
+<style>
+.boton-reservar {
+  margin: 14px 20px 22px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #d6b34c;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.boton-reservar:hover { opacity: .9; }
 </style>
 </head>
 
@@ -473,6 +494,7 @@
     <p>📺 Televisión</p>
 
     <p><strong>Desde 55 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Individual', 55)">Reservar</button>
 </div>
 
     <div class="habitacion">
@@ -495,6 +517,7 @@
     <p>📺 Televisión</p>
 
         <p><strong>Desde 80 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Doble', 80)">Reservar</button>
     </div>
 
 
@@ -536,6 +559,7 @@
     <p>📺 Televisión</p>
 
         <p><strong>Desde 100 € por noche</strong></p>
+<button class="boton-reservar" onclick="mostrarReserva('Habitación Triple', 100)">Reservar</button>
     </div>
     </div>
 
@@ -633,34 +657,6 @@ function cambiarFoto(direccion) {
     <a class="boton" href="mailto:hotelsancho1@gmail.com">CONTACTAR</a>
 </section>
 
-<section id="habitacionesDisponibles" style="display:none;">
-    <h2>Elige tu habitación</h2>
-
-<div class="habitacion">
-        <h3>Habitación Individual</h3>
-        <p>Desde 55 € por noche</p>
-        <button onclick="mostrarReserva('Habitación Individual', 55)">
-            Reservar
-        </button>
-    </div>
-
-    <div class="habitacion">
-        <h3>Habitación Doble</h3>
-        <p>Desde 80 € por noche</p>
-        <button onclick="mostrarReserva('Habitación Doble', 80)">
-            Reservar
-        </button>
-    </div>
-
-    <div class="habitacion">
-        <h3>Habitación Triple</h3>
-        <p>Desde 100 € por noche</p>
-        <button onclick="mostrarReserva('Habitación Triple', 100)">
-            Reservar
-        </button>
-    </div>
-</section>
-
 <section id="formularioReserva" style="display:none;">
     <h2>Introduce tus datos</h2>
 
@@ -749,10 +745,22 @@ setInterval(function() {
 
 <script>
 function mostrarHabitaciones() {
-    document.getElementById("habitacionesDisponibles").style.display = "block";
-    document.getElementById("habitacionesDisponibles").scrollIntoView({
-        behavior: "smooth"
-    });
+    const entrada = document.getElementById("entrada").value;
+    const salida = document.getElementById("salida").value;
+
+    if (entrada === "" || salida === "") {
+        alert("Selecciona primero la fecha de entrada y salida");
+        return;
+    }
+
+    const fechaEntrada = new Date(entrada);
+    const fechaSalida = new Date(salida);
+    if (fechaSalida <= fechaEntrada) {
+        alert("La fecha de salida debe ser posterior a la entrada");
+        return;
+    }
+
+    document.getElementById("habitaciones").scrollIntoView({ behavior: "smooth" });
 }
 
 let habitacionElegida = "";
@@ -900,6 +908,13 @@ function guardarReservaLocal() {
     },
     body: JSON.stringify(nuevaReserva)
   });
+}
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function() {
+        navigator.serviceWorker.register("service-worker.js");
+    });
 }
 </script>
 
