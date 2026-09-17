@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Hotel Sancho</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
@@ -225,6 +227,22 @@
     font-weight: bold;
     border-radius: 8px;
 }
+
+/* ===== CABECERA FINAL SAN ===== */
+header{top:18px!important;left:28px!important;width:auto!important;padding:0!important;z-index:90!important}
+header h1{margin:0!important;color:white!important;font-size:0!important;line-height:1!important;text-align:left!important}
+header h1::before{content:"☀  SAN";display:block;font-size:34px;font-weight:900;letter-spacing:3px;color:white;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+header h1::after{content:"〰 〰  HOTEL SANCHO";display:block;font-size:12px;font-weight:800;letter-spacing:2px;color:white;margin-top:1px;text-shadow:0 2px 6px rgba(0,0,0,.35)}
+nav{top:18px!important;right:500px!important;left:auto!important;width:auto!important;padding:0!important;display:flex!important;gap:12px!important;align-items:center!important;z-index:80!important}
+nav>a,nav .nav-room-button,.top-tool-btn,.reserve-top-btn{background:rgba(24,28,31,.78)!important;color:#fff!important;border:0!important;border-radius:9px!important;padding:12px 17px!important;margin:0!important;font-size:15px!important;font-weight:800!important;line-height:20px!important;text-decoration:none!important;box-sizing:border-box!important;backdrop-filter:blur(6px);cursor:pointer}
+nav>a:hover,nav .nav-room-button:hover,.top-tool-btn:hover{background:rgba(12,14,16,.92)!important}
+.top-tools{top:18px!important;right:135px!important;gap:12px!important}
+.reserve-top-btn{position:absolute;top:18px;right:25px;z-index:91;background:#cfa438!important;padding:12px 18px!important}
+.reserve-top-btn:hover{background:#b88d27!important}
+.logo-hotel{display:none!important}
+@media(max-width:1050px){header{left:15px!important}header h1::before{font-size:26px}header h1::after{font-size:9px}nav{right:390px!important}.top-tools{right:115px!important}nav>a,nav .nav-room-button,.top-tool-btn{padding:10px 11px!important;font-size:13px!important}.reserve-top-btn{right:15px;padding:10px 12px!important;font-size:13px!important}}
+@media(max-width:768px){header{position:relative!important;top:auto!important;left:auto!important;width:100%!important;background:#111!important;padding:10px!important}header h1{text-align:center!important}.top-tools{position:relative!important;top:auto!important;right:auto!important;background:#111!important;padding:6px!important}.reserve-top-btn{position:relative;display:block;top:auto;right:auto;margin:6px auto!important;width:max-content}nav{position:relative!important;top:auto!important;right:auto!important;left:auto!important;width:100%!important;background:#111!important;padding:6px!important;justify-content:center!important;flex-wrap:wrap!important}nav>a,nav .nav-room-button,.top-tool-btn{font-size:13px!important;padding:9px 11px!important}}
+
 </style>
 
 <style>
@@ -240,6 +258,38 @@
   cursor: pointer;
 }
 .boton-reservar:hover { opacity: .9; }
+</style>
+
+<style>
+/* ===== CABECERA AJUSTADA AL DISEÑO ELEGIDO ===== */
+.reserve-top-btn{display:none!important}
+header{position:absolute!important;top:20px!important;left:28px!important;width:250px!important;padding:0!important;background:transparent!important;z-index:100!important}
+header h1{font-size:0!important;margin:0!important;position:relative!important;padding-left:72px!important;min-height:62px!important;text-align:left!important}
+header h1::before{content:"☀"!important;position:absolute!important;left:12px!important;top:-7px!important;font-size:34px!important;color:#f1b91d!important;letter-spacing:0!important;text-shadow:0 2px 6px rgba(0,0,0,.25)!important}
+header h1::after{content:"SAN\A HOTEL SANCHO"!important;white-space:pre!important;display:block!important;font-size:31px!important;line-height:26px!important;font-weight:900!important;letter-spacing:3px!important;color:#fff!important;text-shadow:0 2px 7px rgba(0,0,0,.35)!important}
+header:before{content:"☰";position:absolute;left:-12px;top:14px;color:#fff;font-size:30px;font-weight:700;text-shadow:0 2px 7px rgba(0,0,0,.35)}
+header:after{content:"〰\A〰";white-space:pre;position:absolute;left:43px;top:20px;color:#fff;font-size:19px;line-height:8px;font-weight:900}
+nav{position:absolute!important;top:20px!important;left:41%!important;right:auto!important;width:auto!important;padding:0!important;background:transparent!important;display:flex!important;gap:12px!important;align-items:center!important;z-index:100!important}
+.top-tools{position:absolute!important;top:20px!important;right:24px!important;left:auto!important;display:flex!important;gap:12px!important;z-index:101!important}
+nav>a,nav .nav-room-button,.top-tool-btn{background:rgba(24,28,31,.88)!important;color:#fff!important;border:0!important;border-radius:10px!important;padding:13px 17px!important;margin:0!important;font-size:15px!important;font-weight:800!important;line-height:20px!important;box-shadow:none!important;backdrop-filter:blur(5px)!important}
+nav>a:hover,nav .nav-room-button:hover,.top-tool-btn:hover{background:rgba(10,12,14,.96)!important}
+.logo-hotel{display:none!important}
+@media(max-width:1100px){header{left:18px!important;transform:scale(.88);transform-origin:left top}nav{left:35%!important;gap:8px!important}.top-tools{right:12px!important;gap:8px!important}nav>a,nav .nav-room-button,.top-tool-btn{font-size:13px!important;padding:10px 11px!important}}
+@media(max-width:768px){header{position:relative!important;top:auto!important;left:auto!important;width:100%!important;transform:none!important;background:#111!important;padding:10px 0!important}header h1{width:max-content!important;margin:auto!important}.top-tools,nav{position:relative!important;top:auto!important;left:auto!important;right:auto!important;width:100%!important;background:#111!important;padding:6px!important;justify-content:center!important;flex-wrap:wrap!important;box-sizing:border-box!important}}
+</style>
+
+<style>
+/* LOGO SAN definitivo */
+header.san-brand-header{position:absolute!important;top:22px!important;left:28px!important;width:390px!important;height:100px!important;padding:0!important;background:transparent!important;z-index:120!important;display:flex!important;align-items:center!important;gap:18px!important;transform:none!important}
+header.san-brand-header::before,header.san-brand-header::after{content:none!important;display:none!important}
+.san-hamburger{font-size:38px;color:#fff;line-height:1;text-shadow:0 2px 7px rgba(0,0,0,.4);font-family:Arial,sans-serif}
+.san-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.san-logo-mark{width:92px;height:78px;flex:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3))}
+.san-brand-text{display:flex;flex-direction:column;align-items:flex-start;white-space:nowrap;text-shadow:0 2px 7px rgba(0,0,0,.4)}
+.san-brand-text strong{font-size:48px;line-height:.9;letter-spacing:4px;color:#fff;font-weight:900}
+.san-brand-text small{font-size:17px;line-height:1.3;letter-spacing:3px;color:#fff;margin-top:9px;font-weight:500}
+@media(max-width:1100px){header.san-brand-header{left:16px!important;width:300px!important;transform:scale(.82)!important;transform-origin:left top!important}}
+@media(max-width:768px){header.san-brand-header{position:relative!important;top:auto!important;left:auto!important;width:100%!important;height:auto!important;transform:none!important;background:#111!important;padding:10px 14px!important;box-sizing:border-box!important;justify-content:center!important}.san-logo-mark{width:70px;height:60px}.san-brand-text strong{font-size:36px}.san-brand-text small{font-size:13px}}
 </style>
 </head>
 
@@ -404,18 +454,90 @@
     }
 }
 
+
+/* ===== BARRA SUPERIOR HOTEL SANCHO ===== */
+.top-tools{position:absolute;top:18px;right:35px;z-index:60;display:flex;align-items:center;gap:12px;font-family:Arial,sans-serif}
+.top-tool{position:relative}
+.top-tool-btn{border:0;background:rgba(0,0,0,.42);color:#fff;padding:11px 15px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;backdrop-filter:blur(5px)}
+.top-tool-btn:hover{background:rgba(0,0,0,.62)}
+.top-dropdown{display:none;position:absolute;right:0;top:48px;width:245px;background:#fff;color:#222;border-radius:10px;padding:12px;box-shadow:0 10px 35px rgba(0,0,0,.25);text-align:left}
+.top-tool.open .top-dropdown{display:block}
+.top-dropdown a,.top-dropdown button{display:block;width:100%;box-sizing:border-box;border:0;border-bottom:1px solid #ddd;background:#fff;color:#333;text-align:left;padding:12px 8px;text-decoration:none;font-size:15px;cursor:pointer}
+.top-dropdown a:last-child,.top-dropdown button:last-child{border-bottom:0}
+.top-dropdown a:hover,.top-dropdown button:hover{background:#f5f5f5}
+.contact-title{font-weight:700;padding:7px 8px 10px;border-bottom:1px solid #ddd;margin-bottom:2px}
+.contact-phone{float:right;font-weight:700}
+@media(max-width:768px){
+ .top-tools{position:relative;top:auto;right:auto;background:#000;padding:8px;justify-content:center;gap:6px;z-index:80}
+ .top-tool-btn{font-size:13px;padding:9px 10px;background:#222}
+ .top-dropdown{position:fixed;top:105px;left:50%;right:auto;transform:translateX(-50%);width:min(88vw,300px)}
+ header{padding-top:8px !important}
+}
+
+
+/* ===== MENÚ DESPLEGABLE HABITACIONES ===== */
+nav .nav-room-menu{display:inline-block;position:relative}
+nav .nav-room-button{color:white;background:transparent;border:0;margin:0 25px;font-size:18px;font-weight:800;letter-spacing:.5px;cursor:pointer;padding:0}
+nav .nav-room-dropdown{display:none;position:absolute;top:32px;left:50%;transform:translateX(-50%);min-width:245px;background:white;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden;text-align:left;z-index:100}
+nav .nav-room-menu.open .nav-room-dropdown{display:block}
+nav .nav-room-dropdown a{display:block;color:#333!important;margin:0!important;padding:13px 16px!important;font-size:15px!important;font-weight:600!important;border-bottom:1px solid #eee}
+nav .nav-room-dropdown a:hover{background:#f5f5f5}
+@media(max-width:768px){nav .nav-room-menu{display:inline-block}.nav-room-button{font-size:15px!important;margin:0!important;padding:2px!important}.nav-room-dropdown{position:fixed!important;top:125px!important;left:50%!important;min-width:min(88vw,300px)!important}}
 </style>
 <body>
 
-<header>
-    <h1>HOTEL SANCHO</h1>
+
+<div class="top-tools" id="topTools">
+  <div class="top-tool" id="contactTool">
+    <button class="top-tool-btn" type="button" onclick="toggleTopTool('contactTool')">🎧 <span data-i18n="customer">Atención al cliente</span> ▾</button>
+    <div class="top-dropdown">
+      <div class="contact-title"><span data-i18n="customer">Atención al cliente</span><span class="contact-phone">977 823 002</span></div>
+      <a href="tel:+34977823002">📞 <span data-i18n="call">Llamar al hotel</span></a>
+      <a href="https://wa.me/34624032821?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20reserva" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+      <a href="mailto:hotelsancho1@gmail.com">✉️ Email</a>
+    </div>
+  </div>
+  <div class="top-tool" id="languageTool">
+    <button class="top-tool-btn" type="button" onclick="toggleTopTool('languageTool')">🌐 <span id="currentLanguage">Español</span> ▾</button>
+    <div class="top-dropdown">
+      <button type="button" onclick="setLanguage('es')">Español</button>
+      <button type="button" onclick="setLanguage('en')">English</button>
+      <button type="button" onclick="setLanguage('fr')">Français</button>
+      <button type="button" onclick="setLanguage('de')">Deutsch</button>
+    </div>
+  </div>
+</div>
+
+
+<header class="san-brand-header">
+  <div class="san-hamburger">☰</div>
+  <a href="#inicio" class="san-brand" aria-label="Hotel Sancho - Inicio">
+    <svg class="san-logo-mark" viewBox="0 0 110 92" aria-hidden="true">
+      <circle cx="55" cy="25" r="14" fill="#d9a514"/>
+      <g stroke="#d9a514" stroke-width="5" stroke-linecap="round">
+        <line x1="55" y1="2" x2="55" y2="8"/><line x1="55" y1="42" x2="55" y2="49"/>
+        <line x1="31" y1="25" x2="38" y2="25"/><line x1="72" y1="25" x2="79" y2="25"/>
+        <line x1="38" y1="8" x2="43" y2="13"/><line x1="67" y1="37" x2="72" y2="42"/>
+        <line x1="72" y1="8" x2="67" y2="13"/><line x1="43" y1="37" x2="38" y2="42"/>
+      </g>
+      <path d="M8 58 C24 45,36 45,52 58 S80 71,102 55" fill="none" stroke="#d9a514" stroke-width="6" stroke-linecap="round"/>
+      <path d="M8 74 C24 61,36 61,52 74 S80 87,102 71" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <span class="san-brand-text"><strong>SAN</strong><small>HOTEL SANCHO</small></span>
+  </a>
 </header>
 
 <nav>
-    <a href="#inicio">Inicio</a>
-    <a href="#habitaciones">Habitaciones</a>
-    <a href="#servicios">Servicios</a>
-    <a href="#contacto">Contacto</a>
+    <a href="#inicio" data-i18n="home">⌂ Inicio</a>
+    <div class="nav-room-menu" id="roomMenu">
+      <button class="nav-room-button" type="button" onclick="toggleRoomMenu(event)">🛏 <span data-i18n="rooms">Habitaciones</span> ▾</button>
+      <div class="nav-room-dropdown">
+        <a href="#habitaciones" onclick="closeRoomMenu()">🛏️ Todas las habitaciones</a>
+        <a href="#habitacion-individual" onclick="closeRoomMenu()">🛏️ Habitación Individual</a>
+        <a href="#habitacion-doble" onclick="closeRoomMenu()">🛏️ Habitación Doble</a>
+        <a href="#habitacion-triple" onclick="closeRoomMenu()">🛏️ Habitación Triple</a>
+      </div>
+    </div>
 </nav>
 
 <section class="principal" id="inicio">
@@ -435,29 +557,29 @@
 
     <div class="disponibilidad">
         <div>
-    <label>Entrada</label>
+    <label data-i18n="checkin">Entrada</label>
     <input type="date" id="entrada">
 </div>
 
 <div>
-    <label>Salida</label>
+    <label data-i18n="checkout">Salida</label>
     <input type="date" id="salida">
 </div>
 
         <a href="#" class="buscar-hotel"
    onclick="mostrarHabitaciones(); return false;">
-    Consultar disponibilidad
+    <span data-i18n="availability">Consultar disponibilidad</span>
 </a>
     </div>
 
 </section>
 
 <section id="habitaciones">
-    <h2>Nuestras habitaciones</h2>
+    <h2 data-i18n="ourrooms">Nuestras habitaciones</h2>
 
 <div class="habitaciones-grid">
 
-    <div class="habitacion">
+    <div class="habitacion" id="habitacion-individual">
 <h3>Habitación Individual</h3>
 
 <div class="slider">
@@ -497,7 +619,7 @@
 <button class="boton-reservar" onclick="mostrarReserva('Habitación Individual', 55)">Reservar</button>
 </div>
 
-    <div class="habitacion">
+    <div class="habitacion" id="habitacion-doble">
         <h3>Habitación Doble</h3>
 <div class="slider">
     <button onclick="cambiarFoto(-1)">❮</button>
@@ -521,7 +643,7 @@
     </div>
 
 
-    <div class="habitacion">
+    <div class="habitacion" id="habitacion-triple">
 
     <h3>Habitación Triple</h3>
 
@@ -637,13 +759,13 @@ function cambiarFoto(direccion) {
 
 <section id="servicios">
 <section id="servicios">
-    <h2>Servicios</h2>
+    <h2 data-i18n="services">Servicios</h2>
     <p>📶 Wi-Fi gratuito</p>
     <p>🚗 Parking</p>
 </section>
 
 <section id="contacto">
-    <h2>Contacto y reservas</h2>
+    <h2 data-i18n="contactReservations">Contacto y reservas</h2>
     <p>📞 Teléfono: 977 823 002</p>
     <p>📞 Teléfono: 624 032 821</p>
     <p>✉️ Email: hotelsancho1@gmail.com</p>
@@ -918,5 +1040,43 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+
+<script>
+function toggleTopTool(id){
+  document.querySelectorAll('.top-tool').forEach(function(el){ if(el.id!==id) el.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.top-tools')) document.querySelectorAll('.top-tool').forEach(el=>el.classList.remove('open'));
+});
+const uiTranslations={
+ es:{name:'Español',customer:'Atención al cliente',call:'Llamar al hotel',home:'Inicio',rooms:'Habitaciones',services:'Servicios',contact:'Contacto',checkin:'Entrada',checkout:'Salida',availability:'Consultar disponibilidad',ourrooms:'Nuestras habitaciones',contactReservations:'Contacto y reservas'},
+ en:{name:'English',customer:'Customer service',call:'Call the hotel',home:'Home',rooms:'Rooms',services:'Services',contact:'Contact',checkin:'Check-in',checkout:'Check-out',availability:'Check availability',ourrooms:'Our rooms',contactReservations:'Contact and reservations'},
+ fr:{name:'Français',customer:'Service client',call:"Appeler l’hôtel",home:'Accueil',rooms:'Chambres',services:'Services',contact:'Contact',checkin:'Arrivée',checkout:'Départ',availability:'Vérifier la disponibilité',ourrooms:'Nos chambres',contactReservations:'Contact et réservations'},
+ de:{name:'Deutsch',customer:'Kundenservice',call:'Hotel anrufen',home:'Startseite',rooms:'Zimmer',services:'Service',contact:'Kontakt',checkin:'Anreise',checkout:'Abreise',availability:'Verfügbarkeit prüfen',ourrooms:'Unsere Zimmer',contactReservations:'Kontakt und Reservierungen'}
+};
+function setLanguage(lang){
+ const t=uiTranslations[lang]||uiTranslations.es;
+ document.documentElement.lang=lang;
+ document.getElementById('currentLanguage').textContent=t.name;
+ document.querySelectorAll('[data-i18n]').forEach(function(el){const k=el.dataset.i18n;if(t[k]) el.textContent=t[k];});
+ localStorage.setItem('hotelSanchoLanguage',lang);
+ document.querySelectorAll('.top-tool').forEach(el=>el.classList.remove('open'));
+}
+document.addEventListener('DOMContentLoaded',function(){setLanguage(localStorage.getItem('hotelSanchoLanguage')||'es');});
+</script>
+
+
+<script>
+function toggleRoomMenu(event){
+  event.stopPropagation();
+  document.getElementById('roomMenu').classList.toggle('open');
+}
+function closeRoomMenu(){ document.getElementById('roomMenu').classList.remove('open'); }
+document.addEventListener('click', function(e){
+  const m=document.getElementById('roomMenu');
+  if(m && !m.contains(e.target)) m.classList.remove('open');
+});
+</script>
 </body>
 </html>
