@@ -886,6 +886,29 @@ function mostrarHabitaciones() {
         return;
     }
 
+// Mínimo 2 noches viernes y sábado,
+// SOLO durante junio, julio, agosto y septiembre
+
+// Número de noches
+const noches = Math.round(
+    (fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)
+);
+
+const diaEntrada = fechaEntrada.getDay();
+const mesEntrada = fechaEntrada.getMonth() + 1;
+
+// Junio=6, Julio=7, Agosto=8, Septiembre=9
+const temporadaVerano = mesEntrada >= 6 && mesEntrada <= 9;
+
+if (
+    temporadaVerano &&
+    noches === 1 &&
+    (diaEntrada === 5 || diaEntrada === 6)
+) {
+    alert("De junio a septiembre, los viernes y sábados la estancia mínima es de 2 noches.");
+    return;
+}
+
     document.getElementById("habitaciones").scrollIntoView({ behavior: "smooth" });
 }
 
