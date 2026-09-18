@@ -1127,8 +1127,14 @@ function actualizarResumenMultiple() {
 }
 
 async function obtenerReservas() {
-  const respuesta=await fetch(GOOGLE_SCRIPT_URL);
-  return await respuesta.json();
+  const respuesta = await fetch(GOOGLE_SCRIPT_URL + "?t=" + Date.now(), {
+    method: "GET",
+    cache: "no-store"
+  });
+  if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
+  const datos = await respuesta.json();
+  if (!Array.isArray(datos)) throw new Error(datos && datos.error ? datos.error : "Respuesta inválida de disponibilidad");
+  return datos;
 }
 
 function cantidadOcupada(reservas, habitacion, entrada, salida) {
@@ -1138,8 +1144,11 @@ function cantidadOcupada(reservas, habitacion, entrada, salida) {
   for (const r of reservas) {
     if (String(r.habitacion || "").trim() !== habitacion) continue;
 
-    const re = fechaLocal(String(r.entrada || "").slice(0,10));
-    const rs = fechaLocal(String(r.salida || "").slice(0,10));
+    const entradaReserva = String(r.entrada || "").slice(0,10);
+    const salidaReserva = String(r.salida || "").slice(0,10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(entradaReserva) || !/^\d{4}-\d{2}-\d{2}$/.test(salidaReserva)) continue;
+    const re = fechaLocal(entradaReserva);
+    const rs = fechaLocal(salidaReserva);
     const seCruza = ne < rs && ns > re;
     if (!seCruza) continue;
 
