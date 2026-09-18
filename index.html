@@ -1144,13 +1144,51 @@ async function obtenerReservas() {
   return await respuesta.json();
 }
 
+function normalizarTextoReserva(valor) {
+  return String(valor || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function mismaHabitacion(a, b) {
+  const x = normalizarTextoReserva(a);
+  const y = normalizarTextoReserva(b);
+  if (x === y) return true;
+  if (x.includes("individual") && y.includes("individual")) return true;
+  if (x.includes("doble") && y.includes("doble")) return true;
+  if (x.includes("triple") && y.includes("triple")) return true;
+  return false;
+}
+
+function esBloqueo(r) {
+  const nombre = normalizarTextoReserva(r.nombre);
+  const apellidos = normalizarTextoReserva(r.apellidos);
+  return nombre === "bloqueo" || apellidos.includes("no disponible");
+}
+
 function cantidadOcupada(reservas, habitacion, entrada, salida) {
-  const ne=fechaLocal(entrada), ns=fechaLocal(salida);
-  return reservas.reduce((total,r)=>{
-    if(r.habitacion!==habitacion) return total;
-    const re=fechaLocal(String(r.entrada).slice(0,10)), rs=fechaLocal(String(r.salida).slice(0,10));
-    return (ne < rs && ns > re) ? total + (Number(r.cantidad)||1) : total;
-  },0);
+  const ne = fechaLocal(entrada), ns = fechaLocal(salida);
+  const capacidad = CANTIDAD_HABITACIONES[habitacion] || 0;
+  let ocupadas = 0;
+
+  for (const r of reservas) {
+    if (!mismaHabitacion(r.habitacion, habitacion)) continue;
+
+    const re = fechaLocal(String(r.entrada).slice(0,10));
+    const rs = fechaLocal(String(r.salida).slice(0,10));
+    const coincide = ne < rs && ns > re;
+    if (!coincide) continue;
+
+    // Una fila BLOQUEO / NO DISPONIBLE cierra por completo ese tipo
+    // de habitación durante las fechas indicadas.
+    if (esBloqueo(r)) return capacidad;
+
+    ocupadas += Number(r.cantidad) || 1;
+  }
+
+  return Math.min(ocupadas, capacidad);
 }
 
 async function confirmarReserva() {
@@ -1164,6 +1202,21 @@ async function confirmarReserva() {
   let reservas;
   try { reservas=await obtenerReservas(); }
   catch(e){ console.error(e); alert("No se pudo comprobar la disponibilidad. Inténtalo de nuevo."); return; }
+
+  // BLOQUEO TOTAL POR FECHA: si existe cualquier fila BLOQUEO / NO DISPONIBLE
+  // que se cruce con la estancia solicitada, no se guarda ninguna reserva.
+  const ne = fechaLocal(entrada), ns = fechaLocal(salida);
+  const fechaBloqueada = reservas.some(r => {
+    if (!esBloqueo(r)) return false;
+    const re = fechaLocal(String(r.entrada).slice(0,10));
+    const rs = fechaLocal(String(r.salida).slice(0,10));
+    return ne < rs && ns > re;
+  });
+
+  if (fechaBloqueada) {
+    alert("No hay disponibilidad para las fechas seleccionadas.");
+    return;
+  }
 
   for(const x of resumen.seleccion){
     const ocupadas=cantidadOcupada(reservas,x.habitacion,entrada,salida);
