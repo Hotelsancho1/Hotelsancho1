@@ -336,19 +336,6 @@ header.san-brand-header::before,header.san-brand-header::after{content:none!impo
 }
 </style>
 
-
-<style>
-/* ===== CONFIRMACIÓN DE RESERVA ===== */
-.reserva-confirmada{max-width:620px;margin:0 auto;padding:28px 18px;text-align:center}
-.confirmacion-icono{width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:#d6b34c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900}
-.reserva-confirmada h2{margin:0 0 12px;color:#163b47;font-size:30px}
-.confirmacion-bienvenida{font-size:18px;margin-bottom:22px}
-.confirmacion-detalles{max-width:430px;margin:20px auto;padding:17px;background:#f6f6f6;border-radius:10px;text-align:left}
-.confirmacion-detalles p{margin:8px 0}
-.confirmacion-volver{display:inline-block;margin-top:18px;padding:13px 24px;border-radius:8px;background:#d6b34c;color:#fff;text-decoration:none;font-weight:800}
-.confirmacion-volver:hover{opacity:.9}
-</style>
-
 </head>
 
 <a
@@ -1144,51 +1131,29 @@ async function obtenerReservas() {
   return await respuesta.json();
 }
 
-function normalizarTextoReserva(valor) {
-  return String(valor || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toLowerCase();
-}
-
-function mismaHabitacion(a, b) {
-  const x = normalizarTextoReserva(a);
-  const y = normalizarTextoReserva(b);
-  if (x === y) return true;
-  if (x.includes("individual") && y.includes("individual")) return true;
-  if (x.includes("doble") && y.includes("doble")) return true;
-  if (x.includes("triple") && y.includes("triple")) return true;
-  return false;
-}
-
-function esBloqueo(r) {
-  const nombre = normalizarTextoReserva(r.nombre);
-  const apellidos = normalizarTextoReserva(r.apellidos);
-  return nombre === "bloqueo" || apellidos.includes("no disponible");
-}
-
 function cantidadOcupada(reservas, habitacion, entrada, salida) {
   const ne = fechaLocal(entrada), ns = fechaLocal(salida);
-  const capacidad = CANTIDAD_HABITACIONES[habitacion] || 0;
-  let ocupadas = 0;
+  let total = 0;
 
   for (const r of reservas) {
-    if (!mismaHabitacion(r.habitacion, habitacion)) continue;
+    if (String(r.habitacion || "").trim() !== habitacion) continue;
 
-    const re = fechaLocal(String(r.entrada).slice(0,10));
-    const rs = fechaLocal(String(r.salida).slice(0,10));
-    const coincide = ne < rs && ns > re;
-    if (!coincide) continue;
+    const re = fechaLocal(String(r.entrada || "").slice(0,10));
+    const rs = fechaLocal(String(r.salida || "").slice(0,10));
+    const seCruza = ne < rs && ns > re;
+    if (!seCruza) continue;
 
-    // Una fila BLOQUEO / NO DISPONIBLE cierra por completo ese tipo
-    // de habitación durante las fechas indicadas.
-    if (esBloqueo(r)) return capacidad;
+    // Un BLOQUEO de Google Sheets cierra completamente este tipo de habitación.
+    if (r.bloqueo === true ||
+        String(r.nombre || "").trim().toUpperCase() === "BLOQUEO" ||
+        String(r.apellidos || "").trim().toUpperCase() === "NO DISPONIBLE") {
+      return CANTIDAD_HABITACIONES[habitacion];
+    }
 
-    ocupadas += Number(r.cantidad) || 1;
+    total += Number(r.cantidad) || 1;
   }
 
-  return Math.min(ocupadas, capacidad);
+  return total;
 }
 
 async function confirmarReserva() {
@@ -1203,21 +1168,6 @@ async function confirmarReserva() {
   try { reservas=await obtenerReservas(); }
   catch(e){ console.error(e); alert("No se pudo comprobar la disponibilidad. Inténtalo de nuevo."); return; }
 
-  // BLOQUEO TOTAL POR FECHA: si existe cualquier fila BLOQUEO / NO DISPONIBLE
-  // que se cruce con la estancia solicitada, no se guarda ninguna reserva.
-  const ne = fechaLocal(entrada), ns = fechaLocal(salida);
-  const fechaBloqueada = reservas.some(r => {
-    if (!esBloqueo(r)) return false;
-    const re = fechaLocal(String(r.entrada).slice(0,10));
-    const rs = fechaLocal(String(r.salida).slice(0,10));
-    return ne < rs && ns > re;
-  });
-
-  if (fechaBloqueada) {
-    alert("No hay disponibilidad para las fechas seleccionadas.");
-    return;
-  }
-
   for(const x of resumen.seleccion){
     const ocupadas=cantidadOcupada(reservas,x.habitacion,entrada,salida);
     const libres=CANTIDAD_HABITACIONES[x.habitacion]-ocupadas;
@@ -1227,23 +1177,21 @@ async function confirmarReserva() {
   const reservaId="SAN-"+Date.now();
   guardarReservaMultiple(reservaId,resumen);
 
-  // Mostrar una confirmación integrada en la página en lugar del alert del navegador.
   const formulario = document.getElementById("formularioReserva");
   formulario.innerHTML = `
-    <div class="reserva-confirmada">
-      <div class="confirmacion-icono">✓</div>
+    <div style="padding:28px 10px;text-align:center">
+      <div style="width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:#d6b34c;color:white;font-size:48px;line-height:68px;font-weight:bold">✓</div>
       <h2>¡Gracias por tu reserva, ${nombre}!</h2>
-      <p class="confirmacion-bienvenida">Tu reserva ha sido recibida correctamente.</p>
-      <div class="confirmacion-detalles">
-        <p><strong>Código de reserva:</strong> ${reservaId}</p>
-        <p><strong>Total:</strong> ${resumen.total.toFixed(2)} €</p>
+      <p style="font-size:18px">Tu reserva ha sido recibida correctamente.</p>
+      <div style="max-width:430px;margin:22px auto;padding:20px;text-align:left;background:#f6f6f6;border-radius:10px">
+        <b>Código de reserva:</b> ${reservaId}<br><br>
+        <b>Total:</b> ${resumen.total.toFixed(2)} €
       </div>
       <p>¡Te esperamos en Hotel Sancho!</p>
-      <p><strong>Bienvenido y gracias por confiar en nosotros.</strong></p>
-      <a class="confirmacion-volver" href="#inicio">Volver al inicio</a>
+      <p><b>Bienvenido y gracias por confiar en nosotros.</b></p>
+      <button type="button" onclick="location.href='#inicio'; location.reload();" style="margin-top:18px;padding:14px 24px;border:0;border-radius:8px;background:#d6b34c;color:white;font-weight:800;cursor:pointer">Volver al inicio</button>
     </div>`;
-  formulario.style.display = "block";
-  formulario.scrollIntoView({behavior:"smooth", block:"center"});
+  formulario.scrollIntoView({behavior:"smooth"});
 }
 
 const GOOGLE_SCRIPT_URL =
