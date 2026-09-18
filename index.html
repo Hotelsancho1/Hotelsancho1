@@ -1171,7 +1171,26 @@ async function confirmarReserva() {
   for(const x of resumen.seleccion){
     const ocupadas=cantidadOcupada(reservas,x.habitacion,entrada,salida);
     const libres=CANTIDAD_HABITACIONES[x.habitacion]-ocupadas;
-    if(x.cantidad>libres){ alert(`Solo quedan ${Math.max(0,libres)} ${x.habitacion.toLowerCase()} disponibles para esas fechas.`); return; }
+    if(x.cantidad>libres){
+      const formulario = document.getElementById("formularioReserva");
+      let aviso = document.getElementById("avisoNoDisponible");
+      if (!aviso) {
+        aviso = document.createElement("div");
+        aviso.id = "avisoNoDisponible";
+        const boton = formulario.querySelector('button[onclick="confirmarReserva()"]');
+        if (boton) boton.insertAdjacentElement("beforebegin", aviso);
+        else formulario.appendChild(aviso);
+      }
+      aviso.innerHTML = `
+        <div style="margin:18px auto;padding:18px;max-width:520px;background:#fff3f3;border:2px solid #c62828;border-radius:10px;color:#8b1a1a;text-align:center;box-sizing:border-box">
+          <div style="font-size:32px;margin-bottom:6px">⛔</div>
+          <strong style="font-size:20px">No hay disponibilidad</strong>
+          <p style="margin:8px 0 0">Las fechas seleccionadas están ocupadas para ${x.habitacion.toLowerCase()}.</p>
+          <p style="margin:6px 0 0">Por favor, selecciona otras fechas.</p>
+        </div>`;
+      aviso.scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
   }
 
   const reservaId="SAN-"+Date.now();
