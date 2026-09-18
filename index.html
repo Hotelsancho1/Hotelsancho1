@@ -1167,17 +1167,59 @@ const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxpKQU0bVbgkgwJK0Htvmo-gR7ElifVQoprN3ChOy-9Z14mPBFQQwtq6eEpCOSmmxvH/exec";
 
 function guardarReservaMultiple(reservaId,resumen) {
-  const entrada=document.getElementById("entrada").value, salida=document.getElementById("salida").value;
-  const datos={nombre:document.getElementById("nombre").value,apellidos:document.getElementById("apellidos").value,email:document.getElementById("email").value,telefono:document.getElementById("telefono").value};
+  const entrada=document.getElementById("entrada").value;
+  const salida=document.getElementById("salida").value;
+  const datos={
+    nombre:document.getElementById("nombre").value,
+    apellidos:document.getElementById("apellidos").value,
+    email:document.getElementById("email").value,
+    telefono:document.getElementById("telefono").value
+  };
+
   let locales=JSON.parse(localStorage.getItem("reservasHotel"))||[];
+  const habitaciones=[];
+
   resumen.seleccion.forEach(x=>{
     const calculo=calcularPrecioEstancia(x.habitacion,entrada,salida);
     const descuentoTipo=resumen.sinDesayuno ? calculo.noches*x.cantidad*5 : 0;
-    const registro={reservaId,habitacion:x.habitacion,cantidad:x.cantidad,entrada,salida,noches:calculo.noches,desayuno:resumen.sinDesayuno?"Sin desayuno":"Con desayuno",descuentoDesayuno:descuentoTipo,total:(calculo.total*x.cantidad)-descuentoTipo,detallePrecios:calculo.detalle,...datos};
+    const registro={
+      reservaId,
+      habitacion:x.habitacion,
+      cantidad:x.cantidad,
+      entrada,
+      salida,
+      noches:calculo.noches,
+      desayuno:resumen.sinDesayuno?"Sin desayuno":"Con desayuno",
+      descuentoDesayuno:descuentoTipo,
+      total:(calculo.total*x.cantidad)-descuentoTipo,
+      detallePrecios:calculo.detalle,
+      ...datos
+    };
     locales.push(registro);
-    fetch(GOOGLE_SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(registro)});
+    habitaciones.push(registro);
   });
+
   localStorage.setItem("reservasHotel",JSON.stringify(locales));
+
+  // Una sola petición por reserva, aunque incluya varias habitaciones.
+  const reservaCompleta={
+    reservaId,
+    entrada,
+    salida,
+    noches:resumen.noches,
+    desayuno:resumen.sinDesayuno?"Sin desayuno":"Con desayuno",
+    descuentoDesayuno:resumen.descuento,
+    total:resumen.total,
+    habitaciones,
+    ...datos
+  };
+
+  fetch(GOOGLE_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(reservaCompleta)
+  });
 }
 </script>
 <script>
