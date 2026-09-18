@@ -336,6 +336,19 @@ header.san-brand-header::before,header.san-brand-header::after{content:none!impo
 }
 </style>
 
+
+<style>
+/* ===== CONFIRMACIÓN DE RESERVA ===== */
+.reserva-confirmada{max-width:620px;margin:0 auto;padding:28px 18px;text-align:center}
+.confirmacion-icono{width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:#d6b34c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900}
+.reserva-confirmada h2{margin:0 0 12px;color:#163b47;font-size:30px}
+.confirmacion-bienvenida{font-size:18px;margin-bottom:22px}
+.confirmacion-detalles{max-width:430px;margin:20px auto;padding:17px;background:#f6f6f6;border-radius:10px;text-align:left}
+.confirmacion-detalles p{margin:8px 0}
+.confirmacion-volver{display:inline-block;margin-top:18px;padding:13px 24px;border-radius:8px;background:#d6b34c;color:#fff;text-decoration:none;font-weight:800}
+.confirmacion-volver:hover{opacity:.9}
+</style>
+
 </head>
 
 <a
@@ -1160,7 +1173,24 @@ async function confirmarReserva() {
 
   const reservaId="SAN-"+Date.now();
   guardarReservaMultiple(reservaId,resumen);
-  alert("Reserva recibida\nCódigo: "+reservaId+"\nTotal: "+resumen.total.toFixed(2)+" €");
+
+  // Mostrar una confirmación integrada en la página en lugar del alert del navegador.
+  const formulario = document.getElementById("formularioReserva");
+  formulario.innerHTML = `
+    <div class="reserva-confirmada">
+      <div class="confirmacion-icono">✓</div>
+      <h2>¡Gracias por tu reserva, ${nombre}!</h2>
+      <p class="confirmacion-bienvenida">Tu reserva ha sido recibida correctamente.</p>
+      <div class="confirmacion-detalles">
+        <p><strong>Código de reserva:</strong> ${reservaId}</p>
+        <p><strong>Total:</strong> ${resumen.total.toFixed(2)} €</p>
+      </div>
+      <p>¡Te esperamos en Hotel Sancho!</p>
+      <p><strong>Bienvenido y gracias por confiar en nosotros.</strong></p>
+      <a class="confirmacion-volver" href="#inicio">Volver al inicio</a>
+    </div>`;
+  formulario.style.display = "block";
+  formulario.scrollIntoView({behavior:"smooth", block:"center"});
 }
 
 const GOOGLE_SCRIPT_URL =
