@@ -529,6 +529,13 @@ nav .nav-room-dropdown a{display:block;color:#333!important;margin:0!important;p
 nav .nav-room-dropdown a:hover{background:#f5f5f5}
 @media(max-width:768px){nav .nav-room-menu{display:inline-block}.nav-room-button{font-size:15px!important;margin:0!important;padding:2px!important}.nav-room-dropdown{position:fixed!important;top:125px!important;left:50%!important;min-width:min(88vw,300px)!important}}
 </style>
+
+<style>
+#formularioReserva{max-width:760px;margin:30px auto;background:#fff;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.12);padding:30px 24px;box-sizing:border-box}
+.selector-habitaciones{display:grid;gap:10px;margin:18px 0}.selector-habitaciones label{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#f6f6f6;border-radius:9px;font-weight:700}.selector-habitaciones input{width:75px;padding:8px;text-align:center}
+.opcion-desayuno{margin:18px 0;padding:15px;background:#fff8e7;border-radius:9px}.opcion-desayuno label{display:block;margin-top:9px}
+#resumenReserva{margin-top:20px;padding:16px;background:#f6f6f6;border-radius:9px;text-align:left}#formularioReserva>input{width:100%;max-width:520px;padding:11px;margin:5px auto;display:block;box-sizing:border-box}#formularioReserva>button{margin-top:14px;padding:13px 22px;border:0;border-radius:8px;background:#d6b34c;color:#fff;font-weight:800;cursor:pointer}
+</style>
 <body>
 
 
@@ -843,16 +850,25 @@ function cambiarFoto(direccion) {
 </section>
 
 <section id="formularioReserva" style="display:none;">
-    <h2>Introduce tus datos</h2>
-
+    <h2>Tu reserva</h2>
+    <p>Elige cuántas habitaciones quieres reservar. Puedes combinar varios tipos en una sola reserva.</p>
+    <div class="selector-habitaciones">
+      <label>Habitación Individual <input type="number" id="cantidad-individual" min="0" max="3" value="0" onchange="actualizarResumenMultiple()"></label>
+      <label>Habitación Doble <input type="number" id="cantidad-doble" min="0" max="8" value="0" onchange="actualizarResumenMultiple()"></label>
+      <label>Habitación Triple <input type="number" id="cantidad-triple" min="0" max="3" value="0" onchange="actualizarResumenMultiple()"></label>
+    </div>
+    <div class="opcion-desayuno">
+      <strong>Desayuno</strong><br>
+      <label><input type="radio" name="desayuno" value="con" checked onchange="actualizarResumenMultiple()"> Con desayuno (precio normal)</label>
+      <label><input type="radio" name="desayuno" value="sin" onchange="actualizarResumenMultiple()"> Sin desayuno (-5 € por habitación y noche)</label>
+    </div>
     <div id="resumenReserva"></div>
     <br>
-
+    <h3>Datos del cliente</h3>
     <input type="text" id="nombre" placeholder="Nombre">
     <input type="text" id="apellidos" placeholder="Apellidos">
     <input type="email" id="email" placeholder="Email">
     <input type="tel" id="telefono" placeholder="Teléfono">
-
     <button onclick="confirmarReserva()">Confirmar reserva</button>
 </section>
 
@@ -1059,153 +1075,109 @@ function formatearFecha(fechaTexto) {
 }
 
 function mostrarReserva(habitacion) {
-
     const entrada = document.getElementById("entrada").value;
     const salida = document.getElementById("salida").value;
+    if (!entrada || !salida) { alert("Selecciona primero la fecha de entrada y salida"); return; }
+    if (fechaLocal(salida) <= fechaLocal(entrada)) { alert("La fecha de salida debe ser posterior a la entrada"); return; }
 
-    if (entrada === "" || salida === "") {
-        alert("Selecciona primero la fecha de entrada y salida");
-        return;
-    }
-
-    const fechaEntrada = new Date(entrada);
-    const fechaSalida = new Date(salida);
-
-    const diferencia = fechaSalida - fechaEntrada;
-    const noches = diferencia / (1000 * 60 * 60 * 24);
-
-    if (noches <= 0) {
-        alert("La fecha de salida debe ser posterior a la entrada");
-        return;
-    }
-
-    habitacionElegida = habitacion;
-    const calculo = calcularPrecioEstancia(habitacion, entrada, salida);
-    precioElegido = calculo.noches ? (calculo.total / calculo.noches).toFixed(2) : 0;
-
-    const detallePrecios = calculo.detalle
-      .map(d => formatearFecha(d.fecha) + ": " + d.precio + " €")
-      .join("<br>");
-
-    document.getElementById("resumenReserva").innerHTML =
-        "<b>" + habitacion + "</b><br>" +
-        "Entrada: " + formatearFecha(entrada) + "<br>" +
-        "Salida: " + formatearFecha(salida) + "<br>" +
-        "Noches: " + calculo.noches + "<br><br>" +
-        "<b>Precio por cada noche:</b><br>" + detallePrecios +
-        "<h3>Total: " + calculo.total + " €</h3>";
-
+    document.getElementById("cantidad-individual").value = habitacion.includes("Individual") ? 1 : 0;
+    document.getElementById("cantidad-doble").value = habitacion.includes("Doble") ? 1 : 0;
+    document.getElementById("cantidad-triple").value = habitacion.includes("Triple") ? 1 : 0;
+    actualizarResumenMultiple();
     document.getElementById("formularioReserva").style.display = "block";
-
-    document.getElementById("formularioReserva").scrollIntoView({
-        behavior: "smooth"
-    });
+    document.getElementById("formularioReserva").scrollIntoView({ behavior: "smooth" });
 }
+
+const CANTIDAD_HABITACIONES = {
+  "Habitación Individual": 3,
+  "Habitación Doble": 8,
+  "Habitación Triple": 3
+};
+
+function seleccionHabitaciones() {
+  return [
+    { habitacion:"Habitación Individual", cantidad:Math.max(0, Math.min(3, Number(document.getElementById("cantidad-individual").value)||0)) },
+    { habitacion:"Habitación Doble", cantidad:Math.max(0, Math.min(8, Number(document.getElementById("cantidad-doble").value)||0)) },
+    { habitacion:"Habitación Triple", cantidad:Math.max(0, Math.min(3, Number(document.getElementById("cantidad-triple").value)||0)) }
+  ].filter(x => x.cantidad > 0);
+}
+
+function actualizarResumenMultiple() {
+  const entrada=document.getElementById("entrada").value, salida=document.getElementById("salida").value;
+  if(!entrada || !salida) return;
+  const seleccion=seleccionHabitaciones();
+  const sinDesayuno=document.querySelector('input[name="desayuno"]:checked')?.value === "sin";
+  let subtotal=0, habitacionesNoche=0, lineas=[];
+  seleccion.forEach(x=>{
+    const c=calcularPrecioEstancia(x.habitacion,entrada,salida);
+    const totalTipo=c.total*x.cantidad;
+    subtotal += totalTipo;
+    habitacionesNoche += c.noches*x.cantidad;
+    lineas.push(`<b>${x.cantidad} × ${x.habitacion}</b>: ${totalTipo.toFixed(2)} €`);
+  });
+  const descuento=sinDesayuno ? habitacionesNoche*5 : 0;
+  const total=Math.max(0,subtotal-descuento);
+  const noches=Math.round((fechaLocal(salida)-fechaLocal(entrada))/(1000*60*60*24));
+  document.getElementById("resumenReserva").innerHTML =
+    `<b>Entrada:</b> ${formatearFecha(entrada)} &nbsp; <b>Salida:</b> ${formatearFecha(salida)}<br>`+
+    `<b>Noches:</b> ${noches}<br><br>`+(lineas.length?lineas.join("<br>"):"Selecciona al menos una habitación.")+
+    (sinDesayuno?`<br><b>Descuento sin desayuno:</b> -${descuento.toFixed(2)} €`:"<br><b>Desayuno incluido</b>")+
+    `<h3>Total: ${total.toFixed(2)} €</h3>`;
+  return {seleccion, subtotal, descuento, total, noches, sinDesayuno};
+}
+
+async function obtenerReservas() {
+  const respuesta=await fetch(GOOGLE_SCRIPT_URL);
+  return await respuesta.json();
+}
+
+function cantidadOcupada(reservas, habitacion, entrada, salida) {
+  const ne=fechaLocal(entrada), ns=fechaLocal(salida);
+  return reservas.reduce((total,r)=>{
+    if(r.habitacion!==habitacion) return total;
+    const re=fechaLocal(String(r.entrada).slice(0,10)), rs=fechaLocal(String(r.salida).slice(0,10));
+    return (ne < rs && ns > re) ? total + (Number(r.cantidad)||1) : total;
+  },0);
+}
+
 async function confirmarReserva() {
-    const nombre = document.getElementById("nombre").value;
-    const email = document.getElementById("email").value;
+  const nombre=document.getElementById("nombre").value.trim();
+  const email=document.getElementById("email").value.trim();
+  if(!nombre || !email){ alert("Por favor completa nombre y email"); return; }
+  const entrada=document.getElementById("entrada").value, salida=document.getElementById("salida").value;
+  const resumen=actualizarResumenMultiple();
+  if(!resumen || resumen.seleccion.length===0){ alert("Selecciona al menos una habitación"); return; }
 
-    if (nombre === "" || email === "") {
-        alert("Por favor completa nombre y email");
-        return;
-    }
+  let reservas;
+  try { reservas=await obtenerReservas(); }
+  catch(e){ console.error(e); alert("No se pudo comprobar la disponibilidad. Inténtalo de nuevo."); return; }
 
-    const entrada = document.getElementById("entrada").value;
-    const salida = document.getElementById("salida").value;
-
-    const ocupada = await estaOcupada(
-        habitacionElegida,
-        entrada,
-        salida
-    );
-
-    if (ocupada) {
-        alert("Esta habitación ya está ocupada en esas fechas. Por favor elige otras fechas.");
-        return;
-    }
-
-    guardarReservaLocal();
-
-    alert(
-        "Reserva recibida\n" +
-        habitacionElegida +
-        "\nPrecio desde: " + precioElegido + " €"
-    );
-}
-async function estaOcupada(habitacion, entrada, salida) {
-  try {
-    const respuesta = await fetch(GOOGLE_SCRIPT_URL);
-    const reservas = await respuesta.json();
-
-    const nuevaEntrada = new Date(entrada);
-    const nuevaSalida = new Date(salida);
-
-    return reservas.some(function(reserva) {
-
-      if (reserva.habitacion !== habitacion) {
-        return false;
-      }
-
-      const entradaGuardada = new Date(reserva.entrada);
-      const salidaGuardada = new Date(reserva.salida);
-
-      return nuevaEntrada < salidaGuardada &&
-             nuevaSalida > entradaGuardada;
-    });
-
-  } catch (error) {
-    console.error("Error comprobando disponibilidad:", error);
-    return false;
+  for(const x of resumen.seleccion){
+    const ocupadas=cantidadOcupada(reservas,x.habitacion,entrada,salida);
+    const libres=CANTIDAD_HABITACIONES[x.habitacion]-ocupadas;
+    if(x.cantidad>libres){ alert(`Solo quedan ${Math.max(0,libres)} ${x.habitacion.toLowerCase()} disponibles para esas fechas.`); return; }
   }
+
+  const reservaId="SAN-"+Date.now();
+  guardarReservaMultiple(reservaId,resumen);
+  alert("Reserva recibida\nCódigo: "+reservaId+"\nTotal: "+resumen.total.toFixed(2)+" €");
 }
 
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxpKQU0bVbgkgwJK0Htvmo-gR7ElifVQoprN3ChOy-9Z14mPBFQQwtq6eEpCOSmmxvH/exec";
 
-function guardarReservaLocal() {
-  const entrada = document.getElementById("entrada").value;
-  const salida = document.getElementById("salida").value;
-
-  const fechaEntrada = new Date(entrada);
-  const fechaSalida = new Date(salida);
-  const noches = Math.round(
-    (fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24)
-  );
-
-  const calculoPrecio = calcularPrecioEstancia(habitacionElegida, entrada, salida);
-
-  const nuevaReserva = {
-    habitacion: habitacionElegida,
-    entrada: entrada,
-    salida: salida,
-    noches: noches,
-    precioNoche: precioElegido,
-    total: calculoPrecio.total,
-    detallePrecios: calculoPrecio.detalle,
-    nombre: document.getElementById("nombre")?.value || "",
-    apellidos: document.getElementById("apellidos")?.value || "",
-    email: document.getElementById("email")?.value || "",
-    telefono: document.getElementById("telefono")?.value || ""
-  };
-
-  let reservas =
-    JSON.parse(localStorage.getItem("reservasHotel")) || [];
-
-  reservas.push(nuevaReserva);
-
-  localStorage.setItem(
-    "reservasHotel",
-    JSON.stringify(reservas)
-  );
-
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify(nuevaReserva)
+function guardarReservaMultiple(reservaId,resumen) {
+  const entrada=document.getElementById("entrada").value, salida=document.getElementById("salida").value;
+  const datos={nombre:document.getElementById("nombre").value,apellidos:document.getElementById("apellidos").value,email:document.getElementById("email").value,telefono:document.getElementById("telefono").value};
+  let locales=JSON.parse(localStorage.getItem("reservasHotel"))||[];
+  resumen.seleccion.forEach(x=>{
+    const calculo=calcularPrecioEstancia(x.habitacion,entrada,salida);
+    const descuentoTipo=resumen.sinDesayuno ? calculo.noches*x.cantidad*5 : 0;
+    const registro={reservaId,habitacion:x.habitacion,cantidad:x.cantidad,entrada,salida,noches:calculo.noches,desayuno:resumen.sinDesayuno?"Sin desayuno":"Con desayuno",descuentoDesayuno:descuentoTipo,total:(calculo.total*x.cantidad)-descuentoTipo,detallePrecios:calculo.detalle,...datos};
+    locales.push(registro);
+    fetch(GOOGLE_SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(registro)});
   });
+  localStorage.setItem("reservasHotel",JSON.stringify(locales));
 }
 </script>
 <script>
