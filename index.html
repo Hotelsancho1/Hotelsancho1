@@ -1282,9 +1282,20 @@ function cantidadOcupada(reservas, habitacion, entrada, salida) {
   for (const r of reservas) {
     if (String(r.habitacion || "").trim() !== habitacion) continue;
 
-    const entradaReserva = String(r.entrada || "").slice(0,10);
-    const salidaReserva = String(r.salida || "").slice(0,10);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(entradaReserva) || !/^\d{4}-\d{2}-\d{2}$/.test(salidaReserva)) continue;
+    // Google Sheets puede devolver las fechas como AAAA-MM-DD, DD-MM-AAAA o DD/MM/AAAA.
+    // Normalizamos todos esos formatos antes de comprobar si las reservas se cruzan.
+    const normalizarFechaReserva = (valor) => {
+      const texto = String(valor || "").trim().slice(0,10);
+      let m = texto.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+      m = texto.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);
+      if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+      return "";
+    };
+
+    const entradaReserva = normalizarFechaReserva(r.entrada);
+    const salidaReserva = normalizarFechaReserva(r.salida);
+    if (!entradaReserva || !salidaReserva) continue;
     const re = fechaLocal(entradaReserva);
     const rs = fechaLocal(salidaReserva);
     const seCruza = ne < rs && ns > re;
