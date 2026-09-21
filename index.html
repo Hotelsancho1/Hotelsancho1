@@ -1341,7 +1341,29 @@ async function confirmarReserva() {
   }
 
   const reservaId="SAN-"+Date.now();
-  guardarReservaMultiple(reservaId,resumen);
+
+  // Guardar primero en el servidor. Solo mostramos confirmación si Apps Script responde ok:true.
+  try {
+    const respuestaServidor = await guardarReservaMultiple(reservaId, resumen);
+    if (!respuestaServidor || respuestaServidor.ok !== true) {
+      throw new Error((respuestaServidor && respuestaServidor.error) || "La reserva no pudo confirmarse.");
+    }
+  } catch (e) {
+    console.error(e);
+    alert("No se ha realizado la reserva: " + (e.message || "No hay disponibilidad."));
+    try {
+      const nuevasReservas = await obtenerReservas();
+      for (const x of resumen.seleccion) {
+        const ocupadas = cantidadOcupada(nuevasReservas, x.habitacion, entrada, salida);
+        const libres = Math.max(0, CANTIDAD_HABITACIONES[x.habitacion] - ocupadas);
+        if (x.cantidad > libres) {
+          alert("No hay disponibilidad para " + x.habitacion + " en esas fechas. Disponibles: " + libres + ".");
+          break;
+        }
+      }
+    } catch (_) {}
+    return;
+  }
 
   const formulario = document.getElementById("formularioReserva");
   formulario.innerHTML = `
@@ -1363,23 +1385,21 @@ async function confirmarReserva() {
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxpKQU0bVbgkgwJK0Htvmo-gR7ElifVQoprN3ChOy-9Z14mPBFQQwtq6eEpCOSmmxvH/exec";
 
-function guardarReservaMultiple(reservaId,resumen) {
+async function guardarReservaMultiple(reservaId,resumen) {
   const entrada=document.getElementById("entrada").value;
   const salida=document.getElementById("salida").value;
   const datos={
-    nombre:document.getElementById("nombre").value,
-    apellidos:document.getElementById("apellidos").value,
-    email:document.getElementById("email").value,
-    telefono:document.getElementById("telefono").value
+    nombre:document.getElementById("nombre").value.trim(),
+    apellidos:document.getElementById("apellidos").value.trim(),
+    email:document.getElementById("email").value.trim(),
+    telefono:document.getElementById("telefono").value.trim()
   };
 
-  let locales=JSON.parse(localStorage.getItem("reservasHotel"))||[];
   const habitaciones=[];
-
   resumen.seleccion.forEach(x=>{
     const calculo=calcularPrecioEstancia(x.habitacion,entrada,salida);
     const descuentoTipo=resumen.sinDesayuno ? calculo.noches*x.cantidad*5 : 0;
-    const registro={
+    habitaciones.push({
       reservaId,
       habitacion:x.habitacion,
       cantidad:x.cantidad,
@@ -1391,14 +1411,9 @@ function guardarReservaMultiple(reservaId,resumen) {
       total:(calculo.total*x.cantidad)-descuentoTipo,
       detallePrecios:calculo.detalle,
       ...datos
-    };
-    locales.push(registro);
-    habitaciones.push(registro);
+    });
   });
 
-  localStorage.setItem("reservasHotel",JSON.stringify(locales));
-
-  // Una sola petición por reserva, aunque incluya varias habitaciones.
   const reservaCompleta={
     reservaId,
     entrada,
@@ -1411,12 +1426,24 @@ function guardarReservaMultiple(reservaId,resumen) {
     ...datos
   };
 
-  fetch(GOOGLE_SCRIPT_URL,{
+  const respuesta = await fetch(GOOGLE_SCRIPT_URL, {
     method:"POST",
-    mode:"no-cors",
     headers:{"Content-Type":"text/plain;charset=utf-8"},
     body:JSON.stringify(reservaCompleta)
   });
+
+  if (!respuesta.ok) throw new Error("Error del servidor HTTP " + respuesta.status);
+  const resultado = await respuesta.json();
+  if (!resultado || resultado.ok !== true) {
+    throw new Error((resultado && resultado.error) || "La habitación ya no está disponible.");
+  }
+
+  // Guardar en el navegador únicamente después de que el servidor confirme.
+  let locales=JSON.parse(localStorage.getItem("reservasHotel"))||[];
+  locales.push(...habitaciones);
+  localStorage.setItem("reservasHotel",JSON.stringify(locales));
+
+  return resultado;
 }
 </script>
 <script>
@@ -1531,6 +1558,10 @@ document.addEventListener('click', function(e){
 })();
 </script>
 
-\n<script>\nlet reservaGestionActual=null;\nasync function apiReserva(payload){\n  const r=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});\n  if(!r.ok) throw new Error('HTTP '+r.status);\n  return await r.json();\n}\nfunction esc(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[m]));}\nasync function buscarMiReserva(){\n const id=document.getElementById('buscarReservaId').value.trim();\n const email=document.getElementById('buscarReservaEmail').value.trim();\n const out=document.getElementById('resultadoReserva');\n if(!id||!email){out.innerHTML='<p>Introduce el número de reserva y el email.</p>';return;}\n out.innerHTML='<p>Buscando reserva…</p>';\n try{\n   const d=await apiReserva({action:'lookup',reservaId:id,email});\n   if(!d.ok||!d.reserva){out.innerHTML='<p><b>No hemos encontrado esa reserva.</b> Comprueba el código y el email.</p>';return;}\n   reservaGestionActual=d.reserva; pintarReserva(d.reserva);\n }catch(e){console.error(e);out.innerHTML='<p>No se pudo consultar la reserva. Comprueba que el Google Apps Script nuevo está publicado.</p>';}\n}\nfunction pintarReserva(r){\n const cancelada=String(r.estado||'').toUpperCase()==='CANCELADA';\n const habs=(r.habitaciones||[]).map(h=>`${Number(h.cantidad)||1} × ${esc(h.habitacion)}`).join('<br>');\n document.getElementById('resultadoReserva').innerHTML=`<div class="booking-box">\n <span class="booking-status ${cancelada?'cancelled':''}">${cancelada?'CANCELADA':'CONFIRMADA'}</span>\n <h3>Reserva ${esc(r.reservaId)}</h3>\n <div class="booking-grid">\n  <div class="manage-field"><label>Entrada</label><input id="gestEntrada" type="date" value="${esc(r.entrada)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Salida</label><input id="gestSalida" type="date" value="${esc(r.salida)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Nombre</label><input id="gestNombre" value="${esc(r.nombre)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Apellidos</label><input id="gestApellidos" value="${esc(r.apellidos)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Email</label><input id="gestEmail" type="email" value="${esc(r.email)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Teléfono</label><input id="gestTelefono" value="${esc(r.telefono)}" ${cancelada?'disabled':''}></div>\n </div><p><b>Habitaciones:</b><br>${habs||'—'}</p><p><b>Total actual:</b> ${Number(r.total||0).toFixed(2)} €</p>\n ${cancelada?'':`<div class="booking-actions"><button class="manage-btn" onclick="guardarCambiosReserva()">Guardar cambios</button><button class="manage-btn danger" onclick="cancelarMiReserva()">Cancelar reserva</button></div>`}\n </div>`;\n}\nasync function guardarCambiosReserva(){\n if(!reservaGestionActual)return;\n const entrada=document.getElementById('gestEntrada').value,salida=document.getElementById('gestSalida').value;\n if(!entrada||!salida||fechaLocal(salida)<=fechaLocal(entrada)){alert('Comprueba las fechas de entrada y salida.');return;}\n let total=0; const habitaciones=(reservaGestionActual.habitaciones||[]).map(h=>{\n   const cantidad=Number(h.cantidad)||1, c=calcularPrecioEstancia(h.habitacion,entrada,salida);\n   let t=c.total*cantidad; if(String(h.desayuno||reservaGestionActual.desayuno).toLowerCase().includes('sin')) t-=c.noches*cantidad*5;\n   total+=t; return {...h,entrada,salida,noches:c.noches,total:t};\n });\n if(!confirm(`El nuevo total será ${total.toFixed(2)} €. ¿Guardar los cambios?`))return;\n try{const d=await apiReserva({action:'update',reservaId:reservaGestionActual.reservaId,email:reservaGestionActual.email,entrada,salida,nombre:document.getElementById('gestNombre').value.trim(),apellidos:document.getElementById('gestApellidos').value.trim(),nuevoEmail:document.getElementById('gestEmail').value.trim(),telefono:document.getElementById('gestTelefono').value.trim(),total,habitaciones}); if(!d.ok)throw new Error(d.error||'Error'); alert('Reserva actualizada correctamente.'); document.getElementById('buscarReservaEmail').value=document.getElementById('gestEmail').value.trim(); buscarMiReserva();}catch(e){alert('No se pudo modificar la reserva: '+e.message);}\n}\nasync function cancelarMiReserva(){\n if(!reservaGestionActual||!confirm('¿Seguro que quieres cancelar esta reserva? Esta acción quedará registrada.'))return;\n try{const d=await apiReserva({action:'cancel',reservaId:reservaGestionActual.reservaId,email:reservaGestionActual.email});if(!d.ok)throw new Error(d.error||'Error');alert('Reserva cancelada correctamente.');buscarMiReserva();}catch(e){alert('No se pudo cancelar la reserva: '+e.message);}\n}\n</script>\n
+
+<script>
+let reservaGestionActual=null;\nasync function apiReserva(payload){\n  const r=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});\n  if(!r.ok) throw new Error('HTTP '+r.status);\n  return await r.json();\n}\nfunction esc(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[m]));}\nasync function buscarMiReserva(){\n const id=document.getElementById('buscarReservaId').value.trim();\n const email=document.getElementById('buscarReservaEmail').value.trim();\n const out=document.getElementById('resultadoReserva');\n if(!id||!email){out.innerHTML='<p>Introduce el número de reserva y el email.</p>';return;}\n out.innerHTML='<p>Buscando reserva…</p>';\n try{\n   const d=await apiReserva({action:'lookup',reservaId:id,email});\n   if(!d.ok||!d.reserva){out.innerHTML='<p><b>No hemos encontrado esa reserva.</b> Comprueba el código y el email.</p>';return;}\n   reservaGestionActual=d.reserva; pintarReserva(d.reserva);\n }catch(e){console.error(e);out.innerHTML='<p>No se pudo consultar la reserva. Comprueba que el Google Apps Script nuevo está publicado.</p>';}\n}\nfunction pintarReserva(r){\n const cancelada=String(r.estado||'').toUpperCase()==='CANCELADA';\n const habs=(r.habitaciones||[]).map(h=>`${Number(h.cantidad)||1} × ${esc(h.habitacion)}`).join('<br>');\n document.getElementById('resultadoReserva').innerHTML=`<div class="booking-box">\n <span class="booking-status ${cancelada?'cancelled':''}">${cancelada?'CANCELADA':'CONFIRMADA'}</span>\n <h3>Reserva ${esc(r.reservaId)}</h3>\n <div class="booking-grid">\n  <div class="manage-field"><label>Entrada</label><input id="gestEntrada" type="date" value="${esc(r.entrada)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Salida</label><input id="gestSalida" type="date" value="${esc(r.salida)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Nombre</label><input id="gestNombre" value="${esc(r.nombre)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Apellidos</label><input id="gestApellidos" value="${esc(r.apellidos)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Email</label><input id="gestEmail" type="email" value="${esc(r.email)}" ${cancelada?'disabled':''}></div>\n  <div class="manage-field"><label>Teléfono</label><input id="gestTelefono" value="${esc(r.telefono)}" ${cancelada?'disabled':''}></div>\n </div><p><b>Habitaciones:</b><br>${habs||'—'}</p><p><b>Total actual:</b> ${Number(r.total||0).toFixed(2)} €</p>\n ${cancelada?'':`<div class="booking-actions"><button class="manage-btn" onclick="guardarCambiosReserva()">Guardar cambios</button><button class="manage-btn danger" onclick="cancelarMiReserva()">Cancelar reserva</button></div>`}\n </div>`;\n}\nasync function guardarCambiosReserva(){\n if(!reservaGestionActual)return;\n const entrada=document.getElementById('gestEntrada').value,salida=document.getElementById('gestSalida').value;\n if(!entrada||!salida||fechaLocal(salida)<=fechaLocal(entrada)){alert('Comprueba las fechas de entrada y salida.');return;}\n let total=0; const habitaciones=(reservaGestionActual.habitaciones||[]).map(h=>{\n   const cantidad=Number(h.cantidad)||1, c=calcularPrecioEstancia(h.habitacion,entrada,salida);\n   let t=c.total*cantidad; if(String(h.desayuno||reservaGestionActual.desayuno).toLowerCase().includes('sin')) t-=c.noches*cantidad*5;\n   total+=t; return {...h,entrada,salida,noches:c.noches,total:t};\n });\n if(!confirm(`El nuevo total será ${total.toFixed(2)} €. ¿Guardar los cambios?`))return;\n try{const d=await apiReserva({action:'update',reservaId:reservaGestionActual.reservaId,email:reservaGestionActual.email,entrada,salida,nombre:document.getElementById('gestNombre').value.trim(),apellidos:document.getElementById('gestApellidos').value.trim(),nuevoEmail:document.getElementById('gestEmail').value.trim(),telefono:document.getElementById('gestTelefono').value.trim(),total,habitaciones}); if(!d.ok)throw new Error(d.error||'Error'); alert('Reserva actualizada correctamente.'); document.getElementById('buscarReservaEmail').value=document.getElementById('gestEmail').value.trim(); buscarMiReserva();}catch(e){alert('No se pudo modificar la reserva: '+e.message);}\n}\nasync function cancelarMiReserva(){\n if(!reservaGestionActual||!confirm('¿Seguro que quieres cancelar esta reserva? Esta acción quedará registrada.'))return;\n try{const d=await apiReserva({action:'cancel',reservaId:reservaGestionActual.reservaId,email:reservaGestionActual.email});if(!d.ok)throw new Error(d.error||'Error');alert('Reserva cancelada correctamente.');buscarMiReserva();}catch(e){alert('No se pudo cancelar la reserva: '+e.message);}\n}
+</script>
+
 </body>
 </html>
