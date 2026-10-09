@@ -468,6 +468,12 @@ nav .nav-room-dropdown{top:38px!important}
 @media(max-width:768px){#mi-reserva{padding:45px 14px}.manage-search,.booking-grid{grid-template-columns:1fr}.manage-btn{width:100%}.booking-actions{display:grid;grid-template-columns:1fr}}
 </style>
 
+
+<style>
+/* Reseñas Hotel Sancho */
+.resenas-section{max-width:none!important;background:#fff;padding:72px 20px!important;margin:0!important;text-align:left!important}.resenas-wrap{max-width:1050px;margin:auto}.resenas-heading{text-align:center;margin-bottom:30px}.resenas-kicker{font-size:12px;letter-spacing:3px;color:#b28732;font-weight:800}.resenas-heading h2{font-family:Georgia,serif;color:#222;font-size:clamp(28px,4vw,38px);margin:8px 0}.resenas-heading>p:last-child,.resena-form-card>p{color:#666;line-height:1.6}.lista-resenas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:25px 0 38px}.resena-item{background:#f8f6f1;border:1px solid #eee5d5;border-radius:14px;padding:22px}.resena-stars{color:#c99b3b;letter-spacing:3px;font-size:20px}.resena-item h4{margin:10px 0 8px;color:#262626}.resena-item p{line-height:1.6;color:#555;overflow-wrap:anywhere}.resena-date{font-size:12px;color:#888}.resena-empty{grid-column:1/-1;text-align:center;padding:22px;color:#666}.resena-form-card{max-width:700px;margin:0 auto;background:#faf9f6;border:1px solid #eee7dc;border-radius:18px;padding:28px;box-sizing:border-box}.resena-form-card h3{margin:0 0 8px;font-size:24px}.resena-form-card label{display:block;font-weight:700;font-size:13px;margin:16px 0 7px;color:#51493c}.resena-form-card input,.resena-form-card select,.resena-form-card textarea{width:100%;box-sizing:border-box;border:1px solid #d9d5cd;border-radius:9px;background:white;padding:12px;font:inherit}.resena-form-card textarea{resize:vertical}.resena-submit{margin-top:18px;border:0;border-radius:9px;background:#c99b3b;color:white;font-weight:800;padding:14px 22px;cursor:pointer}.resena-submit:disabled{opacity:.6;cursor:wait}#mensajeResena{margin-bottom:0;line-height:1.5}@media(max-width:760px){.lista-resenas{grid-template-columns:1fr}.resenas-section{padding:48px 14px!important}.resena-form-card{padding:20px}}
+</style>
+
 </head>
 
 <a
@@ -954,21 +960,38 @@ function cambiarFoto(direccion) {
 <section id="servicios">
 <section id="servicios">
     <h2 data-i18n="services">Servicios</h2>
+    <p>Recepcion de 08:00h a 20:00h</p>
+    <p>Check-in online disponible</p>
+    <p>Habitaciones con mini navera</p>
+    <p>Plancha para la ropa</p>
+    <p>Bar/cafeteria</p>
+    <p>Máquina expendedora</p>
     <p>📶 Wi-Fi gratuito</p>
-    <p>🚗 Parking</p>
+    <p>🚗 Parking publico</p>
 </section>
 
 <section id="contacto">
     <h2 data-i18n="contactReservations">Contacto y reservas</h2>
-    <p>📞 Teléfono: 977 823 002</p>
-    <p>📞 Teléfono: 624 032 821</p>
-    <p>✉️ Email: hotelsancho1@gmail.com</p>
-<p>
-  📍 <a href="https://maps.app.goo.gl/R6vUV3rJV5pJe1nK7?g_st=ic"
-        target="_blank">
-    Ver ubicación en Google Maps
-  </a>
-</p>
+    <p>📞 Teléfono: <a href="tel:+34977823002">977 823 002</a></p>
+    <p>📞 Teléfono: <a href="tel:+34624032821">624 032 821</a></p>
+    <p>✉️ Email: <a href="mailto:hotelsancho1@gmail.com">hotelsancho1@gmail.com</a></p>
+
+    <div style="max-width:760px;margin:24px auto 0;text-align:left;">
+      <h3 style="margin:0 0 12px;">📍 Cómo llegar al Hotel Sancho</h3>
+      <div style="position:relative;width:100%;height:300px;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.16);background:#e8e8e8;">
+        <iframe
+          title="Mapa de ubicación del Hotel Sancho"
+          src="https://www.google.com/maps?q=Hotel%20Sancho%2C%20L%27Hospitalet%20de%20l%27Infant%2C%20Tarragona&output=embed"
+          width="100%" height="100%" style="border:0;pointer-events:none;"
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade" aria-hidden="true"></iframe>
+        <a href="https://maps.app.goo.gl/R6vUV3rJV5pJe1nK7?g_st=ic"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="Abrir la ubicación del Hotel Sancho en Google Maps"
+           title="Pulsa para abrir Google Maps"
+           style="position:absolute;inset:0;display:block;z-index:2;background:transparent;"></a>
+      </div>
+      <p style="font-size:14px;color:#666;margin-top:8px;">Pulsa el mapa para abrir la ubicación y las indicaciones en Google Maps.</p>
+    </div>
 
     <a class="boton" href="mailto:hotelsancho1@gmail.com">CONTACTAR</a>
 </section>
@@ -1007,6 +1030,24 @@ function cambiarFoto(direccion) {
       <button class="manage-btn" type="button" onclick="buscarMiReserva()">Buscar reserva</button>
     </div>
     <div id="resultadoReserva"></div>
+  </div>
+</section>
+
+
+<section id="resenas-hotel" class="resenas-section">
+  <div class="resenas-wrap">
+    <div class="resenas-heading"><p class="resenas-kicker">OPINIONES DE CLIENTES</p><h2>Reseñas de Hotel Sancho</h2><p>Las experiencias de nuestros huéspedes.</p></div>
+    <div id="listaResenas" class="lista-resenas"><p>Cargando reseñas…</p></div>
+    <div class="resena-form-card">
+      <h3>¿Ya te has alojado con nosotros?</h3><p>Deja tu opinión usando el código y el email de tu reserva. Solo podrás publicar una reseña después de la estancia.</p>
+      <form id="formResena" onsubmit="enviarResena(event)">
+        <label for="resenaCodigo">Número de reserva</label><input id="resenaCodigo" required placeholder="Ej. SAN-123456789" autocomplete="off">
+        <label for="resenaEmail">Email de la reserva</label><input id="resenaEmail" type="email" required placeholder="tu@email.com" autocomplete="email">
+        <label for="resenaEstrellas">Tu valoración</label><select id="resenaEstrellas" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muy bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Mala</option></select>
+        <label for="resenaComentario">Tu comentario</label><textarea id="resenaComentario" required minlength="8" maxlength="1000" rows="4" placeholder="Cuéntanos cómo fue tu estancia…"></textarea>
+        <button class="resena-submit" type="submit" id="botonEnviarResena">Enviar reseña</button><p id="mensajeResena" role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -1645,6 +1686,28 @@ async function cancelarMiReserva(){
  if(!reservaGestionActual||!confirm('¿Seguro que quieres cancelar esta reserva? Esta acción quedará registrada.'))return;
  try{const d=await apiReserva({action:'cancel',reservaId:reservaGestionActual.reservaId,email:reservaGestionActual.email});if(!d.ok)throw new Error(d.error||'Error');alert('Reserva cancelada correctamente.');buscarMiReserva();}catch(e){alert('No se pudo cancelar la reserva: '+e.message);}
 }
+</script>
+
+
+<script>
+// Reseñas verificadas mediante el Google Apps Script del hotel.
+async function cargarResenas(){
+ const caja=document.getElementById('listaResenas'); if(!caja)return;
+ try{const r=await fetch(GOOGLE_SCRIPT_URL+'?action=reviews&t='+Date.now());const d=await r.json();if(!d||!d.ok)throw new Error('No se pudieron cargar las reseñas');
+  const items=Array.isArray(d.resenas)?d.resenas:[];
+  if(!items.length){caja.innerHTML='<div class="resena-empty">Todavía no hay reseñas publicadas. Si ya te has alojado, puedes dejar la tuya.</div>';return;}
+  caja.innerHTML=items.map(x=>{const stars=Math.max(1,Math.min(5,Number(x.estrellas)||5));return '<article class="resena-item"><div class="resena-stars" aria-label="'+stars+' de 5 estrellas">'+'★'.repeat(stars)+'☆'.repeat(5-stars)+'</div><h4>'+escResena(x.nombre||'Cliente')+'</h4><p>'+escResena(x.comentario||'')+'</p><div class="resena-date">'+escResena(x.fecha||'')+'</div></article>';}).join('');
+ }catch(e){console.error(e);caja.innerHTML='<div class="resena-empty">No se han podido cargar las reseñas en este momento.</div>';}
+}
+function escResena(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+async function enviarResena(ev){
+ ev.preventDefault();const btn=document.getElementById('botonEnviarResena'),msg=document.getElementById('mensajeResena');
+ const payload={action:'review_create',reservaId:document.getElementById('resenaCodigo').value.trim(),email:document.getElementById('resenaEmail').value.trim(),estrellas:Number(document.getElementById('resenaEstrellas').value),comentario:document.getElementById('resenaComentario').value.trim()};
+ btn.disabled=true;msg.textContent='Enviando reseña…';msg.style.color='#555';
+ try{const r=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});const d=await r.json();if(!d||!d.ok)throw new Error((d&&d.error)||'No se pudo enviar la reseña.');msg.textContent=d.mensaje||'Gracias. La reseña queda pendiente de aprobación.';msg.style.color='#286738';document.getElementById('resenaComentario').value='';cargarResenas();}
+ catch(e){msg.textContent=e.message||'Error al enviar la reseña.';msg.style.color='#a52a2a';}finally{btn.disabled=false;}
+}
+document.addEventListener('DOMContentLoaded',cargarResenas);
 </script>
 
 </body>
