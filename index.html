@@ -1012,10 +1012,10 @@ function cambiarFoto(direccion) {
     <div id="resumenReserva"></div>
     <br>
     <h3>Datos del cliente</h3>
-    <input type="text" id="nombre" placeholder="Nombre">
-    <input type="text" id="apellidos" placeholder="Apellidos">
-    <input type="email" id="email" placeholder="Email">
-    <input type="tel" id="telefono" placeholder="Teléfono">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="text" id="apellidos" placeholder="Apellidos" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="telefono" placeholder="Teléfono" required autocomplete="tel">
     <button onclick="confirmarReserva()">Confirmar reserva</button>
 </section>
 
@@ -1176,9 +1176,9 @@ const temporadasPrecios = [
   { desde: "2026-01-10", hasta: "2026-12-31", individual: 55, doble: 75, triple: 90 },
   { desde: "2027-01-01", hasta: "2027-03-31", individual: 55, doble: 70, triple: 85 },
   { desde: "2027-04-01", hasta: "2027-06-30", individual: 55, doble: 80, triple: 100 },
-  { desde: "2027-07-01", hasta: "2027-07-31", individual: 60, doble: 85, triple: 110 },
+  { desde: "2027-07-01", hasta: "2027-07-31", individual: 60, doble: 90, triple: 120 },
   { desde: "2027-08-01", hasta: "2027-08-31", individual: 60, doble: 100, triple: 130 },
-  { desde: "2027-09-01", hasta: "2027-09-30", individual: 55, doble: 80, triple: 100 },
+  { desde: "2027-09-01", hasta: "2027-09-30", individual: 55, doble: 90, triple: 110 },
   { desde: "2027-10-01", hasta: "2027-12-31", individual: 55, doble: 75, triple: 85 },
 
 
@@ -1379,8 +1379,14 @@ function cantidadOcupada(reservas, habitacion, entrada, salida) {
 
 async function confirmarReserva() {
   const nombre=document.getElementById("nombre").value.trim();
+  const apellidos=document.getElementById("apellidos").value.trim();
   const email=document.getElementById("email").value.trim();
-  if(!nombre || !email){ alert("Por favor completa nombre y email"); return; }
+  const telefono=document.getElementById("telefono").value.trim();
+  if(!nombre || !apellidos || !email || !telefono){
+    alert("Por favor, completa nombre, apellidos, email y teléfono. El teléfono es obligatorio para reservar.");
+    if(!telefono) document.getElementById("telefono").focus();
+    return;
+  }
   const entrada=document.getElementById("entrada").value, salida=document.getElementById("salida").value;
   const resumen=actualizarResumenMultiple();
   if(!resumen || resumen.seleccion.length===0){ alert("Selecciona al menos una habitación"); return; }
