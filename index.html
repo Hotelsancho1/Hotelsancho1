@@ -474,6 +474,129 @@ nav .nav-room-dropdown{top:38px!important}
 .resenas-section{max-width:none!important;background:#fff;padding:72px 20px!important;margin:0!important;text-align:left!important}.resenas-wrap{max-width:1050px;margin:auto}.resenas-heading{text-align:center;margin-bottom:30px}.resenas-kicker{font-size:12px;letter-spacing:3px;color:#b28732;font-weight:800}.resenas-heading h2{font-family:Georgia,serif;color:#222;font-size:clamp(28px,4vw,38px);margin:8px 0}.resenas-heading>p:last-child,.resena-form-card>p{color:#666;line-height:1.6}.lista-resenas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:25px 0 38px}.resena-item{background:#f8f6f1;border:1px solid #eee5d5;border-radius:14px;padding:22px}.resena-stars{color:#c99b3b;letter-spacing:3px;font-size:20px}.resena-item h4{margin:10px 0 8px;color:#262626}.resena-item p{line-height:1.6;color:#555;overflow-wrap:anywhere}.resena-date{font-size:12px;color:#888}.resena-empty{grid-column:1/-1;text-align:center;padding:22px;color:#666}.resena-form-card{max-width:700px;margin:0 auto;background:#faf9f6;border:1px solid #eee7dc;border-radius:18px;padding:28px;box-sizing:border-box}.resena-form-card h3{margin:0 0 8px;font-size:24px}.resena-form-card label{display:block;font-weight:700;font-size:13px;margin:16px 0 7px;color:#51493c}.resena-form-card input,.resena-form-card select,.resena-form-card textarea{width:100%;box-sizing:border-box;border:1px solid #d9d5cd;border-radius:9px;background:white;padding:12px;font:inherit}.resena-form-card textarea{resize:vertical}.resena-submit{margin-top:18px;border:0;border-radius:9px;background:#c99b3b;color:white;font-weight:800;padding:14px 22px;cursor:pointer}.resena-submit:disabled{opacity:.6;cursor:wait}#mensajeResena{margin-bottom:0;line-height:1.5}@media(max-width:760px){.lista-resenas{grid-template-columns:1fr}.resenas-section{padding:48px 14px!important}.resena-form-card{padding:20px}}
 </style>
 
+
+<style>
+/* Fotos de habitaciones ampliables al pulsar */
+.foto-habitacion {
+  cursor: zoom-in !important;
+}
+#visorFotoHabitacion {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, .92);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+#visorFotoHabitacion.abierto {
+  display: flex;
+}
+#visorFotoHabitacion img {
+  display: block;
+  max-width: 95vw;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 35px rgba(0,0,0,.45);
+}
+#cerrarVisorFoto {
+  position: absolute;
+  top: 14px;
+  right: 22px;
+  border: 0;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+#ayudaVisorFoto {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  color: #eee;
+  text-align: center;
+  font: 13px Arial, sans-serif;
+}
+@media(max-width:600px) {
+  #visorFotoHabitacion { padding: 12px; }
+  #visorFotoHabitacion img { max-width: 96vw; max-height: 84vh; }
+  #cerrarVisorFoto { top: 10px; right: 10px; }
+}
+</style>
+
+
+<style>
+/* Navegación dentro de la foto ampliada */
+#visorFotoHabitacion .flechaVisorFoto {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 52px;
+  height: 64px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  color: #fff;
+  background: rgba(255,255,255,.16);
+  font: 42px/1 Arial, sans-serif;
+  cursor: pointer;
+}
+#visorFotoHabitacion .flechaVisorFoto:hover { background: rgba(255,255,255,.28); }
+#visorFotoHabitacion .flechaVisorFoto.anterior { left: 18px; }
+#visorFotoHabitacion .flechaVisorFoto.siguiente { right: 18px; }
+#contadorVisorFoto {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font: 700 14px Arial, sans-serif;
+  background: rgba(0,0,0,.35);
+  border-radius: 20px;
+  padding: 8px 12px;
+}
+#visorFotoHabitacion img { max-width: calc(95vw - 120px); }
+@media(max-width:600px) {
+  #visorFotoHabitacion .flechaVisorFoto { width: 40px; height: 52px; font-size: 34px; border-radius: 9px; }
+  #visorFotoHabitacion .flechaVisorFoto.anterior { left: 7px; }
+  #visorFotoHabitacion .flechaVisorFoto.siguiente { right: 7px; }
+  #visorFotoHabitacion img { max-width: calc(96vw - 82px); max-height: 78vh; }
+  #contadorVisorFoto { top: 12px; }
+  #ayudaVisorFoto { font-size: 11px; padding: 0 8px; }
+}
+</style>
+
+
+<style>
+/* Control de avance automático de la galería ampliada */
+#visorFotoHabitacion .controlAutoFotos {
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  z-index: 3;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 20px;
+  padding: 9px 12px;
+  background: rgba(0,0,0,.38);
+  color: #fff;
+  font: 700 13px Arial, sans-serif;
+  cursor: pointer;
+}
+@media(max-width:600px) {
+  #visorFotoHabitacion .controlAutoFotos { top: 12px; left: 8px; font-size: 11px; padding: 8px 9px; }
+}
+</style>
+
 </head>
 
 <a
@@ -912,10 +1035,12 @@ let fotoActual = 0;
 
 const fotosDoble = [
     "doble.jpeg",
+    "doble1.jpeg",
     "doble2.jpeg",
     "doble3.jpeg",
     "doble4.jpeg",
     "doble5.jpeg",
+    "doble7.jpeg",
     "doble6.jpeg"
 ];
 
@@ -1713,6 +1838,164 @@ async function enviarResena(ev){
  catch(e){msg.textContent=e.message||'Error al enviar la reseña.';msg.style.color='#a52a2a';}finally{btn.disabled=false;}
 }
 document.addEventListener('DOMContentLoaded',cargarResenas);
+</script>
+
+
+<div id="visorFotoHabitacion" role="dialog" aria-modal="true" aria-label="Fotos ampliadas de habitaciones">
+  <button id="cerrarVisorFoto" type="button" aria-label="Cerrar foto ampliada">×</button>
+  <button id="controlAutoFotos" class="controlAutoFotos" type="button" aria-pressed="false">▶ Reproducir</button>
+  <button id="fotoAnteriorAmpliada" class="flechaVisorFoto anterior" type="button" aria-label="Foto anterior">‹</button>
+  <img id="fotoAmpliadaHabitacion" src="" alt="Foto ampliada de habitación">
+  <button id="fotoSiguienteAmpliada" class="flechaVisorFoto siguiente" type="button" aria-label="Foto siguiente">›</button>
+  <div id="contadorVisorFoto">1 / 1</div>
+  <div id="ayudaVisorFoto">Usa las flechas o desliza la foto para ver más · Esc para cerrar</div>
+</div>
+<script>
+(function () {
+  const visor = document.getElementById('visorFotoHabitacion');
+  const fotoGrande = document.getElementById('fotoAmpliadaHabitacion');
+  const cerrar = document.getElementById('cerrarVisorFoto');
+  const botonAuto = document.getElementById('controlAutoFotos');
+  let imagenesHabitacion = [];
+  let indiceActual = 0;
+  let temporizadorAuto = null;
+
+  function recogerImagenes() {
+    imagenesHabitacion = Array.from(document.querySelectorAll('.foto-habitacion'));
+  }
+
+  function mostrarFotoActual() {
+    const img = imagenesHabitacion[indiceActual];
+    if (!img) return;
+    fotoGrande.src = img.src;
+    fotoGrande.alt = img.alt || 'Foto ampliada de habitación';
+    const contador = document.getElementById('contadorVisorFoto');
+    if (contador) contador.textContent = (indiceActual + 1) + ' / ' + imagenesHabitacion.length;
+  }
+
+  function cambiarFoto(direccion) {
+    if (!imagenesHabitacion.length) return;
+    indiceActual = (indiceActual + direccion + imagenesHabitacion.length) % imagenesHabitacion.length;
+    mostrarFotoActual();
+  }
+
+  function pararAuto() {
+    if (temporizadorAuto !== null) {
+      window.clearInterval(temporizadorAuto);
+      temporizadorAuto = null;
+    }
+    if (botonAuto) {
+      botonAuto.textContent = '▶ Reproducir';
+      botonAuto.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  function alternarAuto() {
+    if (temporizadorAuto !== null) {
+      pararAuto();
+      return;
+    }
+    recogerImagenes();
+    if (imagenesHabitacion.length < 2) return;
+    botonAuto.textContent = '⏸ Pausar';
+    botonAuto.setAttribute('aria-pressed', 'true');
+    temporizadorAuto = window.setInterval(function () {
+      cambiarFoto(1);
+    }, 3000);
+  }
+
+  function abrirFoto(img) {
+    recogerImagenes();
+    indiceActual = imagenesHabitacion.indexOf(img);
+    if (indiceActual < 0) indiceActual = 0;
+    mostrarFotoActual();
+    pararAuto();
+    visor.classList.add('abierto');
+    document.body.style.overflow = 'hidden';
+    cerrar.focus();
+  }
+
+  function cerrarFoto() {
+    pararAuto();
+    visor.classList.remove('abierto');
+    fotoGrande.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.foto-habitacion').forEach(function (img) {
+    img.addEventListener('click', function () { abrirFoto(img); });
+    img.setAttribute('tabindex', '0');
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', (img.alt || 'Foto de habitación') + '. Pulsa para ampliar');
+    img.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        abrirFoto(img);
+      }
+    });
+  });
+
+  const anterior = document.getElementById('fotoAnteriorAmpliada');
+  const siguiente = document.getElementById('fotoSiguienteAmpliada');
+  if (anterior) anterior.addEventListener('click', function (event) {
+    event.stopPropagation(); cambiarFoto(-1);
+  });
+  if (siguiente) siguiente.addEventListener('click', function (event) {
+    event.stopPropagation(); cambiarFoto(1);
+  });
+  if (botonAuto) botonAuto.addEventListener('click', function (event) {
+    event.stopPropagation(); alternarAuto();
+  });
+
+  cerrar.addEventListener('click', cerrarFoto);
+  visor.addEventListener('click', function (event) {
+    if (event.target === visor) cerrarFoto();
+  });
+
+  let touchStartX = null;
+  visor.addEventListener('touchstart', function (event) {
+    if (event.changedTouches && event.changedTouches.length) touchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
+  visor.addEventListener('touchend', function (event) {
+    if (touchStartX === null || !event.changedTouches || !event.changedTouches.length) return;
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(deltaX) > 45) cambiarFoto(deltaX < 0 ? 1 : -1);
+    touchStartX = null;
+  }, { passive: true });
+
+  document.addEventListener('keydown', function (event) {
+    if (!visor.classList.contains('abierto')) return;
+    if (event.key === 'Escape') cerrarFoto();
+    if (event.key === 'ArrowRight') cambiarFoto(1);
+    if (event.key === 'ArrowLeft') cambiarFoto(-1);
+  });
+})();
+</script>
+
+
+<script>
+/* Rotación automática de las fotos pequeñas en las tarjetas de habitaciones */
+(function () {
+  const galerias = [
+    { id: 'fotoIndividual', fotos: ['individual.jpeg', 'individual1.jpeg'] },
+    { id: 'fotoDoble', fotos: ['doble.jpeg', 'doble1.jpeg', 'doble2.jpeg', 'doble3.jpeg', 'doble4.jpeg', 'doble5.jpeg', 'doble7.jpeg', 'doble6.jpeg'] },
+    { id: 'fotoTriple', fotos: ['triple1.jpeg', 'triple.jpeg', 'triple2.jpeg', 'triple3.jpeg'] }
+  ];
+
+  galerias.forEach(function (galeria) {
+    const img = document.getElementById(galeria.id);
+    if (!img || galeria.fotos.length < 2) return;
+    let indice = galeria.fotos.indexOf(img.getAttribute('src'));
+    if (indice < 0) indice = 0;
+    window.setInterval(function () {
+      // No cambiar la foto mientras el usuario está viendo la galería ampliada.
+      const visor = document.getElementById('visorFotoHabitacion');
+      if (visor && visor.classList.contains('abierto')) return;
+      indice = (indice + 1) % galeria.fotos.length;
+      img.src = galeria.fotos[indice];
+    }, 4000);
+  });
+})();
 </script>
 
 </body>
