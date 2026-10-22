@@ -474,6 +474,19 @@ nav .nav-room-dropdown{top:38px!important}
 .resenas-section{max-width:none!important;background:#fff;padding:72px 20px!important;margin:0!important;text-align:left!important}.resenas-wrap{max-width:1050px;margin:auto}.resenas-heading{text-align:center;margin-bottom:30px}.resenas-kicker{font-size:12px;letter-spacing:3px;color:#b28732;font-weight:800}.resenas-heading h2{font-family:Georgia,serif;color:#222;font-size:clamp(28px,4vw,38px);margin:8px 0}.resenas-heading>p:last-child,.resena-form-card>p{color:#666;line-height:1.6}.lista-resenas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:25px 0 38px}.resena-item{background:#f8f6f1;border:1px solid #eee5d5;border-radius:14px;padding:22px}.resena-stars{color:#c99b3b;letter-spacing:3px;font-size:20px}.resena-item h4{margin:10px 0 8px;color:#262626}.resena-item p{line-height:1.6;color:#555;overflow-wrap:anywhere}.resena-date{font-size:12px;color:#888}.resena-empty{grid-column:1/-1;text-align:center;padding:22px;color:#666}.resena-form-card{max-width:700px;margin:0 auto;background:#faf9f6;border:1px solid #eee7dc;border-radius:18px;padding:28px;box-sizing:border-box}.resena-form-card h3{margin:0 0 8px;font-size:24px}.resena-form-card label{display:block;font-weight:700;font-size:13px;margin:16px 0 7px;color:#51493c}.resena-form-card input,.resena-form-card select,.resena-form-card textarea{width:100%;box-sizing:border-box;border:1px solid #d9d5cd;border-radius:9px;background:white;padding:12px;font:inherit}.resena-form-card textarea{resize:vertical}.resena-submit{margin-top:18px;border:0;border-radius:9px;background:#c99b3b;color:white;font-weight:800;padding:14px 22px;cursor:pointer}.resena-submit:disabled{opacity:.6;cursor:wait}#mensajeResena{margin-bottom:0;line-height:1.5}@media(max-width:760px){.lista-resenas{grid-template-columns:1fr}.resenas-section{padding:48px 14px!important}.resena-form-card{padding:20px}}
 </style>
 
+<style>
+/* Reseñas compactas: estilo moderno, puntuación basada solo en reseñas reales */
+.resenas-section.resenas-compactas{padding:34px 18px!important;background:#fff!important}
+.resenas-compactas .resenas-wrap{max-width:1000px}
+.resenas-compactas .resenas-heading{margin-bottom:16px;text-align:left}
+.resenas-compactas .resenas-kicker{letter-spacing:2px;font-size:10px}
+.resenas-compactas .resenas-heading h2{font-size:clamp(23px,3vw,30px);margin:5px 0}
+.resumen-resenas{display:flex;align-items:center;gap:20px;background:#faf9f6;border:1px solid #eee7dc;border-radius:12px;padding:14px 18px;margin:0 0 14px}
+.resumen-nota{min-width:100px;text-align:center}.resumen-nota strong{display:block;font-size:32px;line-height:1.1;color:#252525}.resumen-nota small{display:block;font-size:11px;color:#777;margin-top:4px}.resumen-estrellas{color:#c99b3b;letter-spacing:2px;font-size:17px}
+.resumen-barras{flex:1;max-width:320px;display:grid;gap:4px}.resumen-fila{display:grid;grid-template-columns:18px 1fr 25px;gap:7px;align-items:center;font-size:11px;color:#666}.resumen-track{height:6px;background:#e9e6df;border-radius:10px;overflow:hidden}.resumen-fill{height:100%;background:#c99b3b;border-radius:10px}
+.resenas-compactas .lista-resenas{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 14px}.resenas-compactas .resena-item{padding:14px 16px;border-radius:11px;background:#fff;border:1px solid #eee9df;box-shadow:0 2px 8px rgba(0,0,0,.035)}.resenas-compactas .resena-stars{font-size:15px;letter-spacing:2px}.resenas-compactas .resena-item h4{font-size:14px;margin:6px 0}.resenas-compactas .resena-item p{font-size:13px;line-height:1.45;margin:5px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.resenas-compactas .resena-date{font-size:11px}.resenas-compactas .resena-empty{padding:14px;font-size:13px}.resena-details{margin-top:12px;border-top:1px solid #eee7dc;padding-top:12px}.resena-details summary{cursor:pointer;color:#39352e;font-size:13px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}.resena-details summary::-webkit-details-marker{display:none}.resena-details summary span{color:#987126;font-weight:800}.resena-details[open] summary{margin-bottom:14px}.resenas-compactas .resena-form-card{padding:20px;max-width:680px}.resenas-compactas .resena-form-card h3{font-size:20px}.boton-todas-resenas{display:block;margin:0 auto 18px;padding:10px 18px;border:1px solid #d8c6a2;border-radius:24px;background:#fff;color:#72531c;font-weight:700;font-size:13px;cursor:pointer}.boton-todas-resenas:hover{background:#faf6ed}.resenas-compactas.ver-todas-resenas .resena-item p{-webkit-line-clamp:unset;display:block;overflow:visible}
+@media(max-width:600px){.resenas-section.resenas-compactas{padding:28px 14px!important}.resumen-resenas{gap:12px;padding:12px}.resumen-nota{min-width:78px}.resumen-nota strong{font-size:28px}.resumen-barras{gap:3px}.resenas-compactas .lista-resenas{grid-template-columns:1fr;gap:8px}.resenas-compactas .resena-item{padding:12px 14px}.resena-details summary{align-items:flex-start;font-size:12px}.resenas-compactas .resena-form-card{padding:16px}}
+</style>
 
 <style>
 /* Visor de fotos independiente para cada tipo de habitación */
@@ -755,8 +768,9 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
 <section class="principal" id="inicio">
 
     <img id="fotoHotel"
-         src="foto.jpeg"
-         class="foto-hotel">
+         src="./foto2.jpeg"
+         class="foto-hotel"
+         alt="Hotel Sancho">
 
     <div class="hero-copy"><div class="hero-kicker">HOTEL SANCHO</div><h2 id="textoCambiante">Tu descanso,<br>nuestro destino</h2><div class="hero-line"></div><p>Vive momentos extraordinarios</p></div>
 
@@ -1069,20 +1083,25 @@ function cambiarFoto(direccion) {
 </section>
 
 
-<section id="resenas-hotel" class="resenas-section">
+<section id="resenas-hotel" class="resenas-section resenas-compactas">
   <div class="resenas-wrap">
-    <div class="resenas-heading"><p class="resenas-kicker">OPINIONES DE CLIENTES</p><h2>Reseñas de Hotel Sancho</h2><p>Las experiencias de nuestros huéspedes.</p></div>
-    <div id="listaResenas" class="lista-resenas"><p>Cargando reseñas…</p></div>
-    <div class="resena-form-card">
-      <h3>¿Ya te has alojado con nosotros?</h3><p>Deja tu opinión usando el código y el email de tu reserva. Solo podrás publicar una reseña después de la estancia.</p>
-      <form id="formResena" onsubmit="enviarResena(event)">
-        <label for="resenaCodigo">Número de reserva</label><input id="resenaCodigo" required placeholder="Ej. SAN-123456789" autocomplete="off">
-        <label for="resenaEmail">Email de la reserva</label><input id="resenaEmail" type="email" required placeholder="tu@email.com" autocomplete="email">
-        <label for="resenaEstrellas">Tu valoración</label><select id="resenaEstrellas" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muy bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Mala</option></select>
-        <label for="resenaComentario">Tu comentario</label><textarea id="resenaComentario" required minlength="8" maxlength="1000" rows="4" placeholder="Cuéntanos cómo fue tu estancia…"></textarea>
-        <button class="resena-submit" type="submit" id="botonEnviarResena">Enviar reseña</button><p id="mensajeResena" role="status" aria-live="polite"></p>
-      </form>
-    </div>
+    <div class="resenas-heading"><p class="resenas-kicker">OPINIONES DE HUÉSPEDES</p><h2>Reseñas de Hotel Sancho</h2></div>
+    <div id="resumenResenas" class="resumen-resenas" hidden></div>
+    <div id="listaResenas" class="lista-resenas"><p class="resena-empty">Cargando reseñas…</p></div>
+    <button type="button" id="botonTodasResenas" class="boton-todas-resenas" onclick="alternarTodasResenas()" hidden>Leer todas las reseñas</button>
+    <details class="resena-details">
+      <summary>¿Ya te has alojado con nosotros? <span>Escribe tu reseña</span></summary>
+      <div class="resena-form-card">
+        <p>Deja tu opinión usando el código y el email de tu reserva. Solo podrás publicar una reseña después de la estancia.</p>
+        <form id="formResena" onsubmit="enviarResena(event)">
+          <label for="resenaCodigo">Número de reserva</label><input id="resenaCodigo" required placeholder="Ej. SAN-123456789" autocomplete="off">
+          <label for="resenaEmail">Email de la reserva</label><input id="resenaEmail" type="email" required placeholder="tu@email.com" autocomplete="email">
+          <label for="resenaEstrellas">Tu valoración</label><select id="resenaEstrellas" required><option value="5">★★★★★ — Excelente</option><option value="4">★★★★☆ — Muy bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Regular</option><option value="1">★☆☆☆☆ — Mala</option></select>
+          <label for="resenaComentario">Tu comentario</label><textarea id="resenaComentario" required minlength="8" maxlength="1000" rows="4" placeholder="Cuéntanos cómo fue tu estancia…"></textarea>
+          <button class="resena-submit" type="submit" id="botonEnviarResena">Enviar reseña</button><p id="mensajeResena" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -1733,12 +1752,22 @@ async function cancelarMiReserva(){
 // Reseñas verificadas mediante el Google Apps Script del hotel.
 async function cargarResenas(){
  const caja=document.getElementById('listaResenas'); if(!caja)return;
+ const resumen=document.getElementById('resumenResenas');
+ const botonTodas=document.getElementById('botonTodasResenas');
  try{const r=await fetch(GOOGLE_SCRIPT_URL+'?action=reviews&t='+Date.now());const d=await r.json();if(!d||!d.ok)throw new Error('No se pudieron cargar las reseñas');
   const items=Array.isArray(d.resenas)?d.resenas:[];
-  if(!items.length){caja.innerHTML='<div class="resena-empty">Todavía no hay reseñas publicadas. Si ya te has alojado, puedes dejar la tuya.</div>';return;}
-  caja.innerHTML=items.map(x=>{const stars=Math.max(1,Math.min(5,Number(x.estrellas)||5));return '<article class="resena-item"><div class="resena-stars" aria-label="'+stars+' de 5 estrellas">'+'★'.repeat(stars)+'☆'.repeat(5-stars)+'</div><h4>'+escResena(x.nombre||'Cliente')+'</h4><p>'+escResena(x.comentario||'')+'</p><div class="resena-date">'+escResena(x.fecha||'')+'</div></article>';}).join('');
- }catch(e){console.error(e);caja.innerHTML='<div class="resena-empty">No se han podido cargar las reseñas en este momento.</div>';}
+  if(!items.length){if(resumen){resumen.hidden=true;resumen.innerHTML='';}caja.innerHTML='<div class="resena-empty">Todavía no hay reseñas publicadas. Si ya te has alojado, puedes dejar la tuya.</div>';if(botonTodas)botonTodas.hidden=true;return;}
+  const valoraciones=items.map(x=>Math.max(1,Math.min(5,Number(x.estrellas)||5)));
+  const media=valoraciones.reduce((a,b)=>a+b,0)/valoraciones.length;
+  if(resumen){const barras=[5,4,3,2,1].map(n=>{const cuenta=valoraciones.filter(v=>v===n).length;const porcentaje=cuenta/valoraciones.length*100;return '<div class="resumen-fila"><span>'+n+'★</span><div class="resumen-track"><div class="resumen-fill" style="width:'+porcentaje+'%"></div></div><span>'+cuenta+'</span></div>';}).join('');resumen.innerHTML='<div class="resumen-nota"><strong>'+media.toFixed(1).replace('.',',')+'</strong><div class="resumen-estrellas" aria-label="Media de '+media.toFixed(1)+' sobre 5">★★★★★</div><small>'+items.length+' '+(items.length===1?'reseña':'reseñas')+'</small></div><div class="resumen-barras">'+barras+'</div>';resumen.hidden=false;}
+  window.resenasHotelItems=items;
+  const raiz=document.getElementById('resenas-hotel');if(raiz)raiz.classList.remove('ver-todas-resenas');
+  caja.innerHTML=items.slice(0,2).map(renderTarjetaResena).join('');
+  if(botonTodas){botonTodas.hidden=items.length<=2;botonTodas.textContent='Leer todas las reseñas ('+items.length+')';botonTodas.setAttribute('aria-expanded','false');}
+ }catch(e){console.error(e);if(resumen)resumen.hidden=true;caja.innerHTML='<div class="resena-empty">No se han podido cargar las reseñas en este momento.</div>';}
 }
+function renderTarjetaResena(x){const stars=Math.max(1,Math.min(5,Number(x.estrellas)||5));return '<article class="resena-item"><div class="resena-stars" aria-label="'+stars+' de 5 estrellas">'+'★'.repeat(stars)+'☆'.repeat(5-stars)+'</div><h4>'+escResena(x.nombre||'Cliente')+'</h4><p>'+escResena(x.comentario||'')+'</p><div class="resena-date">'+escResena(x.fecha||'')+'</div></article>'; }
+function alternarTodasResenas(){const raiz=document.getElementById('resenas-hotel'),caja=document.getElementById('listaResenas'),boton=document.getElementById('botonTodasResenas');if(!raiz||!caja||!boton||!Array.isArray(window.resenasHotelItems))return;const mostrarTodas=!raiz.classList.contains('ver-todas-resenas');if(mostrarTodas){raiz.classList.add('ver-todas-resenas');caja.innerHTML=window.resenasHotelItems.map(renderTarjetaResena).join('');boton.textContent='Mostrar menos reseñas';boton.setAttribute('aria-expanded','true');}else{raiz.classList.remove('ver-todas-resenas');caja.innerHTML=window.resenasHotelItems.slice(0,2).map(renderTarjetaResena).join('');boton.textContent='Leer todas las reseñas ('+window.resenasHotelItems.length+')';boton.setAttribute('aria-expanded','false');}}
 function escResena(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 async function enviarResena(ev){
  ev.preventDefault();const btn=document.getElementById('botonEnviarResena'),msg=document.getElementById('mensajeResena');
