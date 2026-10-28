@@ -470,6 +470,25 @@ nav .nav-room-dropdown{top:38px!important}
 
 
 <style>
+
+/* Ventana superior «Mi reserva», estilo ventana de consulta de hotel */
+.mi-reserva-modal{display:none;position:fixed;inset:0;z-index:100000;background:rgba(13,16,18,.58);padding:18px;box-sizing:border-box;align-items:center;justify-content:center;overflow-y:auto;backdrop-filter:blur(4px)}
+.mi-reserva-modal.abierto{display:flex}
+.mi-reserva-modal-card{position:relative;width:min(420px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:#fff;border:1px solid rgba(255,255,255,.7);border-radius:13px;box-shadow:0 20px 60px rgba(0,0,0,.32)}
+.mi-reserva-cerrar{position:absolute;top:10px;right:10px;margin:0;width:30px;height:30px;border:0;border-radius:50%;background:#f2f2f2;color:#444;font-size:23px;line-height:1;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center}
+.mi-reserva-cerrar:hover{background:#e7e7e7}
+#miReservaModal #mi-reserva{max-width:none;margin:0;padding:20px 20px 22px;scroll-margin-top:0;text-align:left}
+#miReservaModal #mi-reserva .manage-card{padding:8px 2px 2px;box-shadow:none;border-radius:0;text-align:left}
+#miReservaModal #mi-reserva h2{font-family:Arial,sans-serif;font-size:25px;line-height:1.2;text-align:left;padding:0 26px 0 0;margin:0 0 8px;color:#34383c;letter-spacing:-.35px}
+#miReservaModal #mi-reserva .manage-sub{font-size:13px;line-height:1.45;text-align:left;margin:0 0 20px;color:#59616a}
+#miReservaModal .manage-search{grid-template-columns:1fr;gap:12px;text-align:left}
+#miReservaModal .manage-field label{text-align:left;font-size:11px;letter-spacing:.7px;margin-bottom:6px}
+#miReservaModal .manage-field input{height:42px;padding:10px 12px;border:1px solid #dedede;border-radius:8px;background:#f7f7f8;font-size:14px;outline:none}
+#miReservaModal .manage-field input:focus{border-color:#c99b3b;box-shadow:0 0 0 2px rgba(201,155,59,.12);background:#fff}
+#miReservaModal .manage-btn{justify-self:end;min-width:136px;padding:12px 17px;border-radius:8px;background:#c99b3b;font-size:14px}
+#miReservaModal #resultadoReserva:empty{display:none}
+@media(max-width:600px){.mi-reserva-modal{padding:12px}.mi-reserva-modal-card{width:min(420px,100%);max-height:calc(100vh - 24px);border-radius:12px}#miReservaModal #mi-reserva{padding:18px 16px 18px}#miReservaModal #mi-reserva h2{font-size:23px}.mi-reserva-cerrar{top:8px;right:8px}}
+body.mi-reserva-modal-abierto{overflow:hidden}
 /* Reseñas Hotel Sancho */
 .resenas-section{max-width:none!important;background:#fff;padding:72px 20px!important;margin:0!important;text-align:left!important}.resenas-wrap{max-width:1050px;margin:auto}.resenas-heading{text-align:center;margin-bottom:30px}.resenas-kicker{font-size:12px;letter-spacing:3px;color:#b28732;font-weight:800}.resenas-heading h2{font-family:Georgia,serif;color:#222;font-size:clamp(28px,4vw,38px);margin:8px 0}.resenas-heading>p:last-child,.resena-form-card>p{color:#666;line-height:1.6}.lista-resenas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:25px 0 38px}.resena-item{background:#f8f6f1;border:1px solid #eee5d5;border-radius:14px;padding:22px}.resena-stars{color:#c99b3b;letter-spacing:3px;font-size:20px}.resena-item h4{margin:10px 0 8px;color:#262626}.resena-item p{line-height:1.6;color:#555;overflow-wrap:anywhere}.resena-date{font-size:12px;color:#888}.resena-empty{grid-column:1/-1;text-align:center;padding:22px;color:#666}.resena-form-card{max-width:700px;margin:0 auto;background:#faf9f6;border:1px solid #eee7dc;border-radius:18px;padding:28px;box-sizing:border-box}.resena-form-card h3{margin:0 0 8px;font-size:24px}.resena-form-card label{display:block;font-weight:700;font-size:13px;margin:16px 0 7px;color:#51493c}.resena-form-card input,.resena-form-card select,.resena-form-card textarea{width:100%;box-sizing:border-box;border:1px solid #d9d5cd;border-radius:9px;background:white;padding:12px;font:inherit}.resena-form-card textarea{resize:vertical}.resena-submit{margin-top:18px;border:0;border-radius:9px;background:#c99b3b;color:white;font-weight:800;padding:14px 22px;cursor:pointer}.resena-submit:disabled{opacity:.6;cursor:wait}#mensajeResena{margin-bottom:0;line-height:1.5}@media(max-width:760px){.lista-resenas{grid-template-columns:1fr}.resenas-section{padding:48px 14px!important}.resena-form-card{padding:20px}}
 </style>
@@ -517,7 +536,29 @@ nav .nav-room-dropdown{top:38px!important}
 }
 </style>
 
-</head>
+
+<style>
+/* ===== SERVICIOS PREMIUM HOTEL SANCHO ===== */
+#servicios.servicios-premium{max-width:none!important;margin:0!important;padding:42px 26px 54px!important;background:linear-gradient(180deg,#fbf9f4 0%,#f5f1e8 100%)!important;text-align:left!important;scroll-margin-top:20px}
+.servicios-wrap{max-width:1460px;margin:0 auto}
+.servicios-heading{text-align:center;margin:0 auto 28px}
+.servicios-kicker{display:block;color:#bd8a24;font-size:13px;font-weight:800;letter-spacing:3px;margin-bottom:7px}
+.servicios-heading h2{font-family:Georgia,'Times New Roman',serif!important;color:#222831!important;font-size:clamp(32px,4vw,48px)!important;font-weight:500!important;line-height:1.1;margin:0 0 8px!important}
+.servicios-rule{display:block;width:52px;height:2px;background:#c99b3b;margin:0 auto 12px}
+.servicios-heading>p{margin:0;color:#747474;font-size:17px;line-height:1.5}
+.servicios-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.servicio-card{min-width:0;overflow:hidden;background:rgba(255,255,255,.92);border:1px solid rgba(207,190,155,.2);border-radius:14px;box-shadow:0 7px 22px rgba(45,37,23,.08);transition:transform .22s ease,box-shadow .22s ease}
+.servicio-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(45,37,23,.13)}
+.servicio-card>img{display:block;width:100%;height:150px;object-fit:cover}
+.servicio-info{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:start;padding:17px 16px 19px}
+.servicio-icono{width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f7edd5;color:#bd8a24;font-size:29px;font-weight:600}
+.servicio-info h3{font-family:Arial,sans-serif;font-size:18px;line-height:1.25;margin:1px 0 6px;color:#1f2225;font-weight:800}
+.servicio-info p{font-size:14px;line-height:1.45;color:#777;margin:5px 0 0}
+.servicio-info p.servicio-horario{font-size:15px;color:#777;margin:0 0 5px}
+@media(max-width:1100px){.servicios-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.servicio-card>img{height:170px}}
+@media(max-width:600px){#servicios.servicios-premium{padding:34px 14px 38px!important}.servicios-heading{margin-bottom:22px}.servicios-heading>p{font-size:14px}.servicios-grid{grid-template-columns:1fr;gap:13px}.servicio-card{display:grid;grid-template-columns:112px minmax(0,1fr);align-items:stretch}.servicio-card>img{height:100%;min-height:156px;max-height:200px}.servicio-info{grid-template-columns:1fr;gap:9px;padding:13px}.servicio-icono{width:38px;height:38px;font-size:21px}.servicio-info h3{font-size:16px}.servicio-info p,.servicio-info p.servicio-horario{font-size:13px}}
+</style>
+\n</head>
 
 <a
   href="https://wa.me/34624032821?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20reserva"
@@ -762,7 +803,7 @@ nav .nav-room-dropdown a:hover{background:#f5f5f5}
     </div>
     <a href="#servicios" data-i18n="services">Servicios</a>
     <a href="#contacto" data-i18n="contact">Contacto</a>
-    <a href="#mi-reserva">Mi reserva</a>
+    <a href="#mi-reserva" onclick="abrirMiReservaModal(event)">Mi reserva</a>
 </nav>
 
 <section class="principal" id="inicio">
@@ -1006,17 +1047,49 @@ function cambiarFoto(direccion) {
 }
 </script>
 
-<section id="servicios">
-<section id="servicios">
-    <h2 data-i18n="services">Servicios</h2>
-    <p>Recepcion de 08:00h a 20:00h</p>
-    <p>Check-in online disponible</p>
-    <p>Habitaciones con mini nevera</p>
-    <p>Plancha para la ropa</p>
-    <p>Bar/cafeteria</p>
-    <p>Máquina expendedora</p>
-    <p>📶 Wi-Fi gratuito</p>
-    <p>🚗 Parking publico</p>
+<section id="servicios" class="servicios-premium">
+  <div class="servicios-wrap">
+    <div class="servicios-heading">
+      <span class="servicios-kicker">HOTEL SANCHO</span>
+      <h2 data-i18n="services">Servicios</h2>
+      <span class="servicios-rule" aria-hidden="true"></span>
+      <p>Todo lo que necesitas para una estancia cómoda y agradable</p>
+    </div>
+    <div class="servicios-grid">
+      <article class="servicio-card">
+        <img src="servicios-recepcion.jpg" alt="Recepción del Hotel Sancho" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">♙</span><div><h3>Recepción</h3><p class="servicio-horario">De 08:00h a 20:00h</p><p>Nuestro equipo está siempre disponible para ayudarte.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-checkin.jpg" alt="Check-in online" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">▦</span><div><h3>Check-in online</h3><p class="servicio-horario">Disponible 24 horas</p><p>Realiza tu check-in online de forma rápida y sencilla.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-mininevera.jpg" alt="Mininevera en habitación" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">▤</span><div><h3>Habitaciones con mini nevera</h3><p>Todas nuestras habitaciones disponen de mini nevera.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-plancha.jpg" alt="Plancha para la ropa" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">♨</span><div><h3>Plancha para la ropa</h3><p>Disponible bajo petición en recepción.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-cafeteria.jpg" alt="Café y desayuno" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">☕</span><div><h3>Bar / Cafetería</h3><p>Disfruta de bebidas, cafés y aperitivos durante tu estancia.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-vending.jpg" alt="Máquina expendedora de bebidas y snacks" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">▣</span><div><h3>Máquina expendedora</h3><p>Bebidas y snacks disponibles en el hotel.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-wifi.jpg" alt="Conexión Wi-Fi" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">⌁</span><div><h3>Wi-Fi gratuito</h3><p>Conexión a internet de alta velocidad en todo el hotel.</p></div></div>
+      </article>
+      <article class="servicio-card">
+        <img src="servicios-parking.jpg" alt="Aparcamiento público cercano" loading="lazy">
+        <div class="servicio-info"><span class="servicio-icono" aria-hidden="true">P</span><div><h3>Parking público cercano</h3><p>Opciones de aparcamiento en las inmediaciones.</p></div></div>
+      </article>
+    </div>
+  </div>
 </section>
 
 <section id="contacto">
@@ -1069,9 +1142,12 @@ function cambiarFoto(direccion) {
 </section>
 
 
+<div id="miReservaModal" class="mi-reserva-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="miReservaModalTitulo" onclick="cerrarMiReservaSiFondo(event)">
+  <div class="mi-reserva-modal-card">
+    <button class="mi-reserva-cerrar" type="button" aria-label="Cerrar" onclick="cerrarMiReservaModal()">&times;</button>
 <section id="mi-reserva">
   <div class="manage-card">
-    <h2>Mi reserva</h2>
+    <h2 id="miReservaModalTitulo">¿Tienes una reserva activa?</h2>
     <p class="manage-sub">Consulta, modifica o cancela tu reserva con tu código y el mismo email usado al reservar.</p>
     <div class="manage-search">
       <div class="manage-field"><label for="buscarReservaId">Número de reserva</label><input id="buscarReservaId" placeholder="Ej. SAN-123456789"></div>
@@ -1081,6 +1157,8 @@ function cambiarFoto(direccion) {
     <div id="resultadoReserva"></div>
   </div>
 </section>
+  </div>
+</div>
 
 
 <section id="resenas-hotel" class="resenas-section resenas-compactas">
@@ -1589,6 +1667,25 @@ if ("serviceWorker" in navigator) {
 
 
 <script>
+function abrirMiReservaModal(event){
+  if(event) event.preventDefault();
+  document.querySelectorAll('.top-tool').forEach(function(el){el.classList.remove('open');});
+  const modal=document.getElementById('miReservaModal');
+  if(!modal) return;
+  modal.classList.add('abierto');
+  modal.setAttribute('aria-hidden','false');
+  document.body.classList.add('mi-reserva-modal-abierto');
+  window.setTimeout(function(){const campo=document.getElementById('buscarReservaId');if(campo)campo.focus();},80);
+}
+function cerrarMiReservaModal(){
+  const modal=document.getElementById('miReservaModal');
+  if(!modal) return;
+  modal.classList.remove('abierto');
+  modal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('mi-reserva-modal-abierto');
+}
+function cerrarMiReservaSiFondo(event){if(event.target && event.target.id==='miReservaModal') cerrarMiReservaModal();}
+document.addEventListener('keydown',function(event){if(event.key==='Escape') cerrarMiReservaModal();});
 function toggleTopTool(id){
   document.querySelectorAll('.top-tool').forEach(function(el){ if(el.id!==id) el.classList.remove('open'); });
   document.getElementById(id).classList.toggle('open');
